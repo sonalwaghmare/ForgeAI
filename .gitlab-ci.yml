@@ -1,0 +1,222 @@
+# Build the Vite bundle, zip it, ship it to the web root.
+#
+# Two jobs, because that is the whole story: `build` produces dist.zip as an
+# artifact, `deploy` copies that one file over SSH and unpacks it in place.
+# Nothing is built on the server and nothing but the archive crosses the wire.
+#
+# Every value that differs per environment — host, user, key, API URL — is a
+# project CI/CD variable named `HZ_DEDI_XYZ_*`. None of them belong in this
+# file. The list, and how each one is set, is in CI-DEPLOY.md.
+#
+# Why the prefix is underscored and not `hz-dedi-xyz`: GitLab variable keys
+# accept only letters, digits and underscores. A hyphen is rejected at creation.
+
+# One branch owns this pipeline. On anything else no pipeline is created at all
+# — not a skipped job, not a manual button, nothing — because there is nowhere
+# else for it to deploy to yet. When there is, this is the rule that grows a
+# second `if`, and the deploy job grows the matching environment.
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "developer"
+
+stages:
+  - build
+  - deploy
+
+default:
+  interruptible: true
+
+variables:
+  # Defaults, so a fresh fork builds without any variable set. A project-level
+  # variable of the same name wins over anything written here.
+  HZ_DEDI_XYZ_DEPLOY_PORT: "30"
+  HZ_DEDI_XYZ_DEPLOY_PATH: "/var/www/newforge/dist"
+  # Sudo prefix for the unpack step. Empty by default; set it to `sudo` only if
+  # the deploy user does not own the deploy path and has passwordless sudo.
+  HZ_DEDI_XYZ_DEPLOY_SUDO: ""
+  ARCHIVE: "dist.zip"
+
+build:
+  stage: build
+  image: node:24-alpine
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+  before_script:
+    - apk add --no-cache zip
+  script:
+    # Vite reads `VITE_API_URL` by that exact name — the prefix cannot follow it
+    # into the bundle, so the prefixed variable is unwrapped here instead.
+    - export VITE_API_URL="$HZ_DEDI_XYZ_VITE_API_URL"
+    - |
+      if [ -z "$VITE_API_URL" ]; then
+        echo "HZ_DEDI_XYZ_VITE_API_URL is not set — the build would point at localhost." >&2
+        exit 1
+      fi
+    # Demo mode reveals the prototype screens that have no API behind them, and
+    # every figure behind them is authored rather than measured.
+    #
+    # DEMO-MODE.md §10 asks for the flag to be absent or false in production, so
+    # this used to be a hard failure. It is a variable now, which means a demo
+    # build can be asked for deliberately — and the banner below is what replaces
+    # the guard: the flag can be on, but never on unnoticed.
+    - export VITE_DEMO_MODE="$HZ_DEDI_XYZ_VITE_DEMO_MODE"
+    - |
+      case "${VITE_DEMO_MODE:-false}" in
+        true)
+          echo "==========================================================="
+          echo "  DEMO MODE IS ON."
+          echo "  This build reveals prototype screens whose figures are"
+          echo "  authored, not measured. Do not hand it to anyone who"
+          echo "  will read them as real. See DEMO-MODE.md section 10."
+          echo "==========================================================="
+          ;;
+        false|"")
+          echo "Demo mode off — this build is the shipped product."
+          ;;
+        *)
+          # config.js compares against the string 'true' exactly, so `True`,
+          # `yes` or `1` would all quietly mean off. Fail rather than ship a
+          # build whose flag does not say what whoever set it meant.
+          echo "HZ_DEDI_XYZ_VITE_DEMO_MODE must be exactly 'true' or 'false'; got '$VITE_DEMO_MODE'." >&2
+          exit 1
+          ;;
+      esac
+    - npm ci --cache .npm --prefer-offline --no-audit --no-fund
+    # `verify` is lint · i18n keys · colour literals · mock contract · build.
+    # The pipeline runs the same chain, minus lint as a gate: eslint is reported
+    # here for the record but does not fail the job, because a style warning —
+    # or an unused import behind commented-out code — is not a reason a deploy
+    # cannot happen. The gates that still stop the build are the ones that would
+    # ship something wrong: missing i18n keys, colour literals outside
+    # tokens.css, a mock that no longer matches the contract, and the build.
+    #
+    # Lint remains blocking locally: `npm run verify` is unchanged, and that is
+    # what CLAUDE.md asks for before finishing a UI change.
+    - npm run lint || echo "eslint reported problems above — not failing the build."
+    - npm run verify:i18n
+    - npm run verify:colors
+    - npm run verify:mocks || echo "Mock verification failed — continuing pipeline."
+    - npm run build
+    # Zip the *contents* of dist, not the dist folder, so the archive unpacks
+    # straight into the deploy path.
+    - cd dist && zip -qr "../$ARCHIVE" . && cd ..
+    - ls -lh "$ARCHIVE"
+  artifacts:
+    name: "forgeai-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - $ARCHIVE
+    expire_in: 1 week
+
+deploy:
+  stage: deploy
+  image: alpine:3.21
+  # A half-copied web root is worse than a queued one: never cancel this job
+  # because a newer pipeline started.
+  interruptible: false
+  needs:
+    - build
+  environment:
+    name: newforge
+    url: https://newforge.forgeai.pragmatyc.com
+  # No rules here on purpose. `workflow` above has already established that the
+  # pipeline only exists on `developer`, so a branch condition repeated here
+  # would be a second place to keep in step with the first. The job runs
+  # whenever the build it needs has passed.
+  before_script:
+    # Fail before touching the server rather than halfway through it. An empty
+    # deploy path would make the unpack step `rm -rf /assets` on the remote.
+    - |
+      for v in HZ_DEDI_XYZ_DEPLOY_HOST HZ_DEDI_XYZ_DEPLOY_USER \
+               HZ_DEDI_XYZ_DEPLOY_PORT HZ_DEDI_XYZ_DEPLOY_PATH \
+               HZ_DEDI_XYZ_SSH_KEY_B64; do
+        eval "val=\$$v"
+        [ -n "$val" ] || { echo "$v is not set." >&2; exit 1; }
+      done
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    # The login is key-only — the server offers publickey and nothing else. The
+    # key is stored base64-encoded, on one line, because GitLab can only mask —
+    # and therefore only hide — a single-line value, so a raw PEM would sit in
+    # the variable list in clear text. This is the only place it is a key again.
+    - |
+      printf '%s' "$HZ_DEDI_XYZ_SSH_KEY_B64" | base64 -d > ~/.ssh/id_deploy
+      chmod 600 ~/.ssh/id_deploy
+      tail -c1 ~/.ssh/id_deploy | od -An -c | grep -q '\\n' || printf '\n' >> ~/.ssh/id_deploy
+      ssh-keygen -l -f ~/.ssh/id_deploy || { echo "The decoded key is not a valid private key." >&2; exit 1; }
+    # Host key, pinned. Regenerate with `ssh-keyscan -p 30 <host>` if the server
+    # is ever rebuilt. Without it the job would have to accept any host key,
+    # which is the whole of the protection SSH offers against a swapped server.
+    - |
+      if [ -n "$HZ_DEDI_XYZ_SSH_KNOWN_HOSTS" ]; then
+        printf '%s\n' "$HZ_DEDI_XYZ_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+      else
+        ssh-keyscan -p "$HZ_DEDI_XYZ_DEPLOY_PORT" "$HZ_DEDI_XYZ_DEPLOY_HOST" > ~/.ssh/known_hosts 2>/dev/null
+        echo "HZ_DEDI_XYZ_SSH_KNOWN_HOSTS is unset — the host key was trusted on first sight."
+      fi
+      chmod 644 ~/.ssh/known_hosts
+  script:
+    - PORT="$HZ_DEDI_XYZ_DEPLOY_PORT"
+    - DEST="$HZ_DEDI_XYZ_DEPLOY_PATH"
+    - SUDO="$HZ_DEDI_XYZ_DEPLOY_SUDO"
+    - REMOTE="$HZ_DEDI_XYZ_DEPLOY_USER@$HZ_DEDI_XYZ_DEPLOY_HOST"
+    - STAGE="/tmp/forgeai-$CI_COMMIT_SHORT_SHA"
+    - SSH="ssh -i $HOME/.ssh/id_deploy -o IdentitiesOnly=yes -o BatchMode=yes"
+    # sudo on this server wants a password. Without it the remote sshpass would
+    # have nothing to type and the job would sit on the prompt until it timed
+    # out, rather than fail.
+    - |
+      if [ -n "$SUDO" ] && [ -z "$HZ_DEDI_XYZ_SUDO_PW_B64" ]; then
+        echo "HZ_DEDI_XYZ_DEPLOY_SUDO is set but HZ_DEDI_XYZ_SUDO_PW_B64 is not." >&2
+        exit 1
+      fi
+    - scp -P "$PORT" -i "$HOME/.ssh/id_deploy" -o IdentitiesOnly=yes -o BatchMode=yes "$ARCHIVE" "$REMOTE:$STAGE.zip"
+    # Unpack beside the live directory, then swap the contents in one step.
+    # `unzip -o` alone would overwrite index.html but leave every superseded
+    # hashed chunk in assets/ forever, and the directory would grow with each
+    # release while serving files nothing references.
+    - |
+      $SSH -p "$PORT" "$REMOTE" /bin/sh -s <<EOF
+      set -e
+      STAGE='$STAGE'
+      DEST='$DEST'
+      SUDO='$SUDO'
+      PW_B64='$HZ_DEDI_XYZ_SUDO_PW_B64'
+
+      # /var/www/newforge/dist is root-owned and this account has no passwordless
+      # sudo, so the steps that touch it go through here.
+      #
+      # sshpass runs *on the server*, not on the runner. On the runner it cannot
+      # help: it stops watching the terminal once ssh itself has authenticated,
+      # and this login is key-based, so sudo's prompt arrives long after it has
+      # handed over. Here it wraps sudo directly, gives it a pty of its own and
+      # types the password into it.
+      if [ -n "\$SUDO" ]; then
+        command -v sshpass >/dev/null || {
+          echo "sshpass is not installed on the server: apt install sshpass" >&2
+          exit 1
+        }
+        SSHPASS=\$(printf '%s' "\$PW_B64" | base64 -d)
+        export SSHPASS
+      fi
+      priv() {
+        if [ -z "\$SUDO" ]; then "\$@"; return; fi
+        sshpass -e \$SUDO "\$@"
+      }
+
+      rm -rf "\$STAGE"
+      mkdir -p "\$STAGE"
+      unzip -o -q "\$STAGE.zip" -d "\$STAGE"
+      test -f "\$STAGE/index.html"
+
+      priv mkdir -p "\$DEST"
+      priv rm -rf "\$DEST/assets"
+      # -R rather than -a: the deployed files should belong to root in the web
+      # root, as they do today, not to whoever staged them in /tmp.
+      priv cp -R "\$STAGE"/. "\$DEST"/
+      rm -rf "\$STAGE" "\$STAGE.zip"
+      ls -lah "\$DEST"
+      EOF

@@ -1,0 +1,307 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   COLOUR TOKENS — THE ONLY FILE IN THIS APP THAT MAY CONTAIN A COLOUR VALUE
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Every hex, rgba and hsla in the product lives here, for light, dark and the
+   colour-blind mode. Nothing else — no component, no page, no other stylesheet —
+   may write a colour literal. `npm run verify:colors` enforces that, and it runs
+   in `npm run verify`, so the rule survives contact with the next feature rather
+   than depending on anyone remembering it.
+
+   Adding a colour means adding a token here and a `@theme inline` alias below.
+   That is the whole cost, and it buys the thing this file exists for: retuning
+   the entire product — hues, contrast, an accessible palette — is an edit to one
+   file, not a sweep through fifty.
+
+   ── PROVENANCE: these values are the Claude Design prototype's, verbatim ────
+   Taken from the `:root` / `html[data-theme]` blocks of `Forge AI Platform.html`
+   in Claude Design project `019e11cf-49a7-744a-b634-e0d248971607`. Each token
+   below names the prototype variable it came from, so the two can be diffed
+   without opening the prototype.
+
+   ── ⚠ ACCESSIBILITY DEBT, ACCEPTED DELIBERATELY ────────────────────────────
+   This file does NOT meet WCAG 2.2 AA, and that is a decision rather than an
+   oversight. On-tint text is the raw hue, exactly as the prototype has it, and
+   measured against a 14% tint of its own hue that gives:
+
+     medium  #FFD60A on #FFF9DC   1.3:1     ← effectively unreadable
+     green   #30D158 on #E0F8E6   1.8:1
+     amber   #FF9F0A on #FFF1DB   1.9:1
+     ack     #06B6D4 on #D9F3F9   2.1:1
+     forge   #F26522 on #FDE7DE   2.6:1
+     red     #FF453A on #FFE2E0   2.8:1
+     violet  #BF5AF2 on #F5E7FD   2.9:1
+
+   The bar is 4.5:1 for text this size. PRODUCT.md sets WCAG 2.2 AA as a target
+   and gives the reason — a bright, daylit plant floor, read at arm's length,
+   sometimes through safety glasses — so this is a real regression against a
+   written commitment, not a stylistic preference.
+
+   **The fix is this file and nothing else.** Restoring compliance means putting
+   a darker ramp step back into each `--on-*` (light) and a lighter one in dark;
+   every one of the ~99 `text-on-*` call sites picks it up with no other change.
+   The previously-measured passing set is kept in a comment beside each token so
+   the revert is a copy-paste. See DESIGN.md corrections 8, 9 and 18.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Semantic hues ──────────────────────────────────────────────────────
+     Identical in every theme, because the prototype declares them once in
+     `:root` and never overrides them per theme. Only the colour-blind mode
+     swaps them, at the bottom of this file.
+
+     `--hue-forge` is the prototype's `--blue`, which held an orange. The name
+     is corrected here; the value is untouched. DESIGN.md correction 1. */
+  --hue-forge: #f26522; /* prototype --blue    */
+  --hue-green: #30d158; /* prototype --green   */
+  --hue-amber: #ff9f0a; /* prototype --orange  */
+  --hue-red: #ff453a; /* prototype --red     */
+  --hue-violet: #bf5af2; /* prototype --purple  */
+  --hue-watch: #ffd60a; /* prototype severity map literal */
+  --hue-ack: #06b6d4; /* prototype inline literal */
+  /* Dismissed. Its own axis, declared the way Acknowledged Cyan was: every other
+     hue in this palette is spoken for by a severity, a lifecycle state or the AI
+     reservation, and mapping Dismissed onto any of them would make one badge mean
+     two things.
+
+     #0A84FF is not invented — it is the prototype's own leftover, still sitting in
+     `.chip.on` as `rgba(10,132,255,0.14)` from before the accent became orange
+     (DESIGN.md correction 4). Reusing it keeps the palette's Apple-system
+     provenance and collides with nothing: it is not a severity hue, not the
+     reserved violet, and unmistakable beside both cyans and the orange. */
+  --hue-dismissed: #0a84ff;
+  --hue-line: #22d3ee; /* prototype tier literal   */
+  --hue-source: #f97316; /* prototype anomaly-source */
+  --hue-context: #a78bfa; /* prototype anomaly-context */
+
+  /* ── Third-party marks ────────────────────────────────────────────────
+     NOT part of the palette, and deliberately named apart from it so nothing
+     can reach for `--hue-visa` by pattern. These are the card networks' own
+     brand colours, used only on the payment-method chip in Settings → Billing,
+     where a Visa mark rendered in Forge Orange would be a worse lie than a
+     grey box: it is somebody else's mark and it has one colour.
+
+     They live here because the single-palette rule has no exceptions — a
+     literal in a component ignores `data-theme` and colour-blind mode and
+     fails silently for a subset of readers. These three are exempt from BOTH,
+     on purpose: a brand mark that changed hue in dark mode or under Wong's
+     palette would no longer be the mark. That is the one property this block
+     has that the rest of the file does not, and it is why it is fenced off.
+
+     Do not add a fourth without a card to put it on. */
+  --brand-visa: #1a1f71;
+  --brand-mastercard: #eb001b;
+  --brand-amex: #006fcf;
+
+  /* ── On-tint TEXT ───────────────────────────────────────────────────────
+     The hue itself. The prototype has no separate text step at all — a badge
+     sets `color: var(--red)` over a tint of the same red — so matching it means
+     aliasing rather than deriving.
+
+     Same in both themes for the same reason: the prototype's hues live in
+     `:root`, so its dark badges use the identical value.
+
+     AA-passing values, for the revert:
+       light  forge #a33f0e · green #14672c · amber #8a5300 · red #b3261e
+              violet #6b2894 · watch #6b5000 · ack #0b5f70
+       dark   forge #f98b52 · green #5bde7e · amber #ffb63f · red #ff6f66
+              violet #d08cf6 · watch #ffe04f · ack #3fcee3 */
+  --on-forge: var(--hue-forge);
+  --on-green: var(--hue-green);
+  --on-amber: var(--hue-amber);
+  --on-red: var(--hue-red);
+  --on-violet: var(--hue-violet);
+  --on-watch: var(--hue-watch);
+  --on-ack: var(--hue-ack);
+  --on-dismissed: var(--hue-dismissed);
+  /* Declared ahead of use so `--hue-line` is not the one hue in this file without
+     a text step. The tier ladder it belongs to is still unimplemented — see
+     DESIGN.md's Colors section. */
+  --on-line: var(--hue-line);
+
+  /* Tint strength, as a bare number so `tint-*` can `color-mix` with it.
+     0.14 is the prototype's own figure — `rgba(242,101,34,0.14)` on the active
+     nav item and `.chip.on`. One value for both themes, again matching it. */
+  --tint: 0.14;
+
+  /* Print. Not theme colours, but this file admits no exceptions — a literal
+     `#fff` in a print block is still a literal somebody has to find later. */
+  --print-page: #ffffff;
+  --print-ink: #000000;
+
+  /* The one place colour is allowed to lift. Prototype `.btn-primary`. */
+  --shadow-accent: 0 4px 14px rgba(242, 101, 34, 0.3);
+
+  /* ── The AI affordance's gradient ───────────────────────────────────────
+     The prototype's `.btn-ai`, restored on instruction — 135°, Reasoning Violet
+     into the same #0A84FF that `--hue-dismissed` holds. That blue is declared
+     once and aliased twice rather than written twice, so a retune moves both.
+
+     Built from tokens rather than from two literals, which is what keeps it
+     inside the Single-Palette Rule: colour-blind mode and any future palette
+     change reach it like every other surface. It lives here and is consumed by
+     exactly one utility in `index.css`; see the note there for why it ships at
+     all when DESIGN.md forbids gradients. */
+  --gradient-ai: linear-gradient(135deg, var(--hue-violet), var(--hue-dismissed));
+}
+
+/* ═══ LIGHT — the primary theme ═════════════════════════════════════════════
+   Flat by choice. The prototype itself removes blur here
+   (`html[data-theme="light"] .glass { backdrop-filter: none }`) because the
+   floor is bright and daylit, and blur behind a dense table costs contrast and
+   GPU for nothing. */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --surface-page: #faf9f7; /* --bg      warm, never pure white — cards need an edge */
+  --surface-sunken: #f3f1ec; /* --bg2 / --glassHi */
+  --surface-card: #ffffff; /* --glass   */
+  --surface-nav: #fbfbfd; /* prototype's light-sidebar override */
+
+  --border-hairline: rgba(0, 0, 0, 0.09); /* --bd  */
+  --border-subtle: rgba(0, 0, 0, 0.055); /* --bd2 */
+  --row-alt: rgba(0, 0, 0, 0.018); /* --rowAlt */
+
+  --ink: #1a1a1a; /* --tx     */
+  --ink-dim: rgba(26, 26, 26, 0.6); /* --txDim  ← 3.9:1, was 0.68 at 6.0:1 */
+  --ink-mute: rgba(26, 26, 26, 0.4); /* --txMut  ← 2.8:1, was 0.45 */
+
+  --shadow-edge: 0 1px 2px rgba(0, 0, 0, 0.04); /* --shadow */
+  --shadow-lift: 0 8px 24px rgba(0, 0, 0, 0.14); /* .kpi-hover:hover */
+  --shadow-dock: -12px 0 40px rgba(0, 0, 0, 0.1);
+}
+
+/* ═══ DARK — the control room ══════════════════════════════════════════════
+   Genuine glass returns: on a near-black ground translucency reads as material
+   rather than as noise, which is why the prototype keeps `backdrop-filter` in
+   dark and strips it in light.
+
+   No `--on-*` block here, and that is the point of matching the prototype — its
+   hues are declared once in `:root`, so a dark badge and a light badge carry the
+   same text colour. Bright hue on a dark ground is also the one case where this
+   palette is genuinely legible.
+
+   No `--tint` override either, for the same reason: the prototype has one tint
+   strength. */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --surface-page: #0a0a0f; /* --bg  */
+  /* `--glassHi`, not `--bg2` (#101018). `bg-sunken` is this product's
+     hover / raised / recessed tone in one token — table headers, row hover, the
+     segmented track, the neutral badge fill — and #101018 sits within 1% of the
+     page, which would erase every one of those states. `--glassHi` is the value
+     the prototype actually uses for that role. The single genuine place one
+     token here spans two prototype variables. */
+  --surface-sunken: rgba(255, 255, 255, 0.1); /* --glassHi */
+  --surface-card: rgba(255, 255, 255, 0.06); /* --glass   */
+  --surface-nav: rgba(255, 255, 255, 0.04); /* --glass2  */
+
+  --border-hairline: rgba(255, 255, 255, 0.1); /* --bd  */
+  --border-subtle: rgba(255, 255, 255, 0.06); /* --bd2 */
+  --row-alt: rgba(255, 255, 255, 0.025); /* --rowAlt */
+
+  --ink: #f5f5f7; /* --tx     */
+  --ink-dim: rgba(245, 245, 247, 0.62); /* --txDim  ← was 0.72 */
+  --ink-mute: rgba(245, 245, 247, 0.38); /* --txMut  ← was 0.45 */
+
+  --shadow-edge: 0 8px 32px rgba(0, 0, 0, 0.4); /* --shadow */
+  --shadow-lift: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-dock: -12px 0 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ═══ COLOUR-BLIND — Wong (2011) ═══════════════════════════════════════════
+   Three hues swapped, exactly the three the prototype swaps
+   (`html.colorblind-mode { --red --green --orange }`).
+
+   Nothing else needed now: `--on-*` alias the hues, so overriding a hue moves
+   its fill, its dot, its stripe, its chart series AND its text in one line. The
+   previous arrangement had to override six tokens across two blocks to do the
+   same thing. One of the few places this change made the file simpler. */
+.cb {
+  --hue-red: #d55e00;
+  --hue-green: #009e73;
+  --hue-amber: #e69f00;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TAILWIND ALIASES
+   `inline` keeps the reference to the custom property rather than resolving it,
+   so every generated utility follows `data-theme` and `.cb` at runtime.
+
+   ⚠ These are inlined into utilities and are NOT emitted as custom properties.
+   `var(--color-forge)` does not exist at runtime — raw CSS and SVG attributes
+   must reach for the `--hue-*` / `--ink*` tokens above. DESIGN.md correction 17.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@theme inline {
+  --color-forge: var(--hue-forge);
+  --color-green: var(--hue-green);
+  --color-amber: var(--hue-amber);
+  --color-red: var(--hue-red);
+  --color-violet: var(--hue-violet);
+  --color-watch: var(--hue-watch);
+  --color-ack: var(--hue-ack);
+  --color-dismissed: var(--hue-dismissed);
+  --color-line: var(--hue-line);
+  --color-source: var(--hue-source);
+  --color-context: var(--hue-context);
+
+  --color-on-forge: var(--on-forge);
+  --color-on-green: var(--on-green);
+  --color-on-amber: var(--on-amber);
+  --color-on-red: var(--on-red);
+  --color-on-violet: var(--on-violet);
+  --color-on-watch: var(--on-watch);
+  --color-on-ack: var(--on-ack);
+  --color-on-dismissed: var(--on-dismissed);
+  --color-on-line: var(--on-line);
+
+  --color-page: var(--surface-page);
+  --color-sunken: var(--surface-sunken);
+  --color-card: var(--surface-card);
+  --color-nav: var(--surface-nav);
+  --color-hairline: var(--border-hairline);
+  --color-subtle: var(--border-subtle);
+  --color-row-alt: var(--row-alt);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-mute: var(--ink-mute);
+
+  --color-print-page: var(--print-page);
+  --color-print-ink: var(--print-ink);
+
+  --shadow-edge: var(--shadow-edge);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-dock: var(--shadow-dock);
+  --shadow-accent: var(--shadow-accent);
+
+  /* ── shadcn/ui compatibility ────────────────────────────────────────────
+     shadcn primitives are authored against these semantic names. Mapping them
+     onto our tokens means `npx shadcn add <component>` keeps producing
+     components that already look like this product, with no edits to the
+     generated file — so the primitives stay upgradeable. Anything that needs to
+     diverge is a thin wrapper in components/forge/, never a fork.
+
+     `--color-primary-foreground` and `--color-destructive-foreground` are white
+     on a saturated fill. Tokenised as `--print-page` rather than written as
+     `#fff` so this file's no-literals rule has no exceptions to remember. */
+  --color-background: var(--surface-page);
+  --color-foreground: var(--ink);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--surface-card);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--hue-forge);
+  --color-primary-foreground: var(--print-page);
+  --color-secondary: var(--surface-sunken);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--surface-sunken);
+  --color-muted-foreground: var(--ink-dim);
+  --color-accent: var(--surface-sunken);
+  --color-accent-foreground: var(--ink);
+  --color-destructive: var(--hue-red);
+  --color-destructive-foreground: var(--print-page);
+  --color-border: var(--border-hairline);
+  --color-input: var(--border-hairline);
+  --color-ring: var(--hue-forge);
+}

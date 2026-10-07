@@ -1,0 +1,518 @@
+@import 'tailwindcss';
+
+/* Every colour in the product. The ONLY file allowed to hold a colour literal;
+   `npm run verify:colors` fails the build if one appears anywhere else. */
+@import './tokens.css';
+
+/* Self-hosted, never a CDN link: a plant may be air-gapped or on poor wifi, and
+   a webfont that fails to load degrades the whole type system.
+
+   Space Grotesk carries the sans — it is the prototype's face and the one the
+   client signed off. IBM Plex Sans stays loaded UNDER it and is doing real work,
+   not sitting there as a courtesy: Space Grotesk ships Latin, Latin-ext and
+   Vietnamese only, so Cyrillic, Greek and every future script sibling fall
+   through to Plex. Both are variable and OFL-1.1. */
+@import '@fontsource-variable/space-grotesk/index.css';
+@import '@fontsource-variable/ibm-plex-sans/index.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+
+/* Theme is an explicit attribute, never prefers-color-scheme alone: the choice
+   comes from the use scene (bright floor vs 24h control room), so the user owns
+   it. `cb` is the Wong-palette accessible mode. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant cb (&:where(.cb, .cb *));
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYOUT TOKENS
+   Colour lives in tokens.css. These are the non-colour runtime values —
+   dimensions the shell measures itself against.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --topnav-h: 48px;
+  --rail-w: 212px;
+  --rail-w-collapsed: 60px;
+  --dock-w: 360px;
+}
+
+@theme {
+  /* A stack, never a single family, so script-matched faces can be appended for
+     a future locale without touching call sites. Plex sits second on purpose —
+     see the import above. */
+  --font-sans:
+    'Space Grotesk Variable', 'Space Grotesk', 'IBM Plex Sans Variable', 'IBM Plex Sans',
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* One silhouette: 6px is the default corner. Deviating means the element is
+     a genuinely different class of object. */
+  --radius: 6px;
+  --radius-xs: 5px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-pill: 20px;
+
+  /* Type roles. Named by job, not by size, so a role can be retuned in one
+     place. `xs`/`sm` are realigned onto the ramp so shadcn primitives, which
+     lean on them heavily, land on documented steps instead of near-misses. */
+  --text-xs: 12.5px;
+  --text-xs--line-height: 1.55;
+  --text-sm: 14px;
+  --text-sm--line-height: 1.5;
+
+  --text-display: 28px;
+  --text-display--line-height: 1.2;
+  --text-display--letter-spacing: -0.5px;
+  --text-display--font-weight: 600;
+
+  --text-headline: 20px;
+  --text-headline--line-height: 1.3;
+  --text-headline--letter-spacing: -0.3px;
+  --text-headline--font-weight: 600;
+
+  --text-title: 16px;
+  --text-title--line-height: 1.35;
+  --text-title--font-weight: 600;
+
+  --text-body: 14px;
+  --text-body--line-height: 1.5;
+
+  --text-body-sm: 12.5px;
+  --text-body-sm--line-height: 1.55;
+
+  --text-metric: 28px;
+  --text-metric--line-height: 1;
+  --text-metric--letter-spacing: -0.5px;
+  --text-metric--font-weight: 600;
+
+  --text-metric-sm: 26px;
+  --text-metric-sm--line-height: 1;
+  --text-metric-sm--letter-spacing: -0.5px;
+  --text-metric-sm--font-weight: 600;
+
+  --text-control: 13px;
+  --text-control--line-height: 1.2;
+  --text-control--font-weight: 600;
+
+  --text-micro: 11px;
+  --text-micro--line-height: 1.2;
+  --text-micro--font-weight: 600;
+
+  --text-label: 10px;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.5px;
+  --text-label--font-weight: 700;
+
+  --text-mono: 12px;
+  --text-mono--line-height: 1.4;
+  --text-mono--font-weight: 500;
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --animate-dock-in: dock-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-trace: trace 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-probe: probe 1.15s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-link: link 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* The root-cause radar. Linear because a sweep has no easing — it is a machine
+     turning at a constant rate, and any curve would make it read as decoration. */
+  --animate-radar-sweep: radar-sweep 2.2s linear infinite;
+  /* A toast arriving. Short, and it rises rather than slides in from the edge:
+     the thing it is reporting happened in the page, not off it. */
+  --animate-toast-in: toast-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* A drawer arriving. It DOES slide in from the edge, unlike the toast: the
+     panel genuinely came from off-screen and is still attached to that edge,
+     which is the one thing the motion has to say. Authored with a logical
+     translate so it enters from the inline end in both directions. */
+  --animate-drawer-in: drawer-in 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* A station on the floor map with an open alert. Slow and shallow: it has to
+     be findable in peripheral vision without becoming the thing you look at, and
+     a plant screen runs all shift. */
+  --animate-alert-ring: alert-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes alert-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 currentColor;
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 5px currentColor;
+    opacity: 0.55;
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    translate: 12px 0;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+:root[dir='rtl'] {
+  --animate-drawer-in: drawer-in-rtl 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes drawer-in-rtl {
+  from {
+    opacity: 0;
+    translate: -12px 0;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dock-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes trace {
+  from {
+    stroke-dashoffset: var(--trace-len, 1200);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* A signal travelling along a link while a connection is being opened.
+   `inset-inline-start` rather than `translateX` on purpose: it is a logical
+   property, so the signal travels from us toward the endpoint under `dir="rtl"`
+   as well, with no mirrored keyframe. */
+@keyframes probe {
+  from {
+    inset-inline-start: -30%;
+  }
+  to {
+    inset-inline-start: 100%;
+  }
+}
+
+/* The link completing. Drawn from the near end outward — the caller sets
+   `origin-left rtl:origin-right` so it grows toward the endpoint either way. */
+/* A radar sweep, for the one operation in this product that genuinely is one: the
+   agent turning through a field of sensor signals looking for a cause. */
+@keyframes radar-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The reduced-motion substitute. Opacity, not movement — see the media query in
+   the base layer for why the sweep is allowed to keep animating at all. */
+@keyframes radar-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+
+@keyframes link {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════════════ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--border-hairline);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100%;
+    background-color: var(--surface-page);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* The Shell-Never-Scrolls Rule applies to the application only. The public
+     page is a document and must scroll, so this is scoped by attribute rather
+     than set globally on html/body. */
+  body[data-surface='app'] {
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* Any element carrying data-theme re-declares its own text colour.
+     `color` inherits as a resolved value, not as the var() that produced it, so
+     a nested theme scope that only redefines --ink leaves every descendant
+     without an explicit text colour still painted in the OUTER theme's ink —
+     near-black text on a near-black panel. Re-declaring here makes a scoped
+     theme self-consistent, so `data-theme` works on a section and not only on
+     <html>. */
+  [data-theme] {
+    color: var(--ink);
+  }
+
+  /* Every interactive element gets a real focus ring. The prototype shipped
+     border-color only, which is invisible to keyboard users — this is the
+     specific WCAG 2.2 AA failure being corrected. */
+  :focus-visible {
+    outline: 2px solid var(--hue-forge);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* One focus treatment across the whole app. shadcn primitives ship a
+     translucent 3px box-shadow ring; suppressing it here keeps a single
+     recognisable ring rather than two competing ones, and it survives
+     regenerating those files. The !important is deliberate — Tailwind's
+     utilities outrank @layer base, and this is a global a11y invariant
+     rather than a style preference. */
+  [data-slot]:focus-visible {
+    box-shadow: none !important;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  /* Directional glyphs mirror off dir, so RTL is an attribute rather than a
+     stylesheet fork. */
+  [dir='rtl'] .mirror-rtl {
+    transform: scaleX(-1);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--hue-forge) 22%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* One exception, and it is the honest kind. The rule above freezes the radar,
+       which is right — rotation is the part carrying vestibular risk. But a
+       progress indicator with no liveness cue cannot be told from a broken one,
+       and this one can run for a minute or more. So the sweep stops turning and
+       fades instead: opacity is not movement, and it is the substitution the
+       prototype's own reduced-motion rule makes. The `aria-live` status text
+       beside it is what actually carries the state for anyone not watching. */
+    .animate-radar-sweep {
+      animation: radar-pulse 1.4s ease-in-out infinite !important;
+    }
+  }
+
+  /* Print is a real output for anomaly reports and shift handovers. */
+  @media print {
+    body {
+      background: var(--print-page);
+      color: var(--print-ink);
+      overflow: visible !important;
+      height: auto !important;
+    }
+    body[data-surface='app'] {
+      overflow: visible !important;
+      height: auto !important;
+    }
+    [data-print='hide'] {
+      display: none !important;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* The Tabular Numerals Rule. Every number a user might compare, without
+   exception — a column of proportional figures cannot be scanned.
+
+   `tabular-nums` is a request, not a guarantee: it is a no-op in a face with no
+   `tnum` feature, and unlike a missing glyph it fails silently. Space Grotesk
+   draws its figures on a near-uniform width, so the request degrades to
+   approximately-tabular rather than to jitter — but if a column of numbers ever
+   reads ragged, the fix is here and it is one line: set `font-family` on this
+   utility to the Plex half of the stack. The mono utility below is unaffected;
+   IBM Plex Mono is monospaced by construction. */
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The Mono-Means-Machine Rule. Marks strings the system minted. */
+@utility mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The Latin-Convention Rule. Uppercase and tracking are Latin devices that do
+   not travel — a no-op in CJK and Devanagari, and actively breaking in Arabic
+   cursive joining. Authored once here so a future locale is a stylesheet
+   condition rather than 200 edits at the call sites. */
+@utility eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+:where(:lang(ja), :lang(ko), :lang(zh), :lang(hi), :lang(th), :lang(ar), :lang(he)) .eyebrow {
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 11px;
+}
+
+/* The same rule, for a label that is set in caps but is not an eyebrow — the
+   severity badge, which the design renders CRITICAL / HIGH / MEDIUM / LOW.
+
+   A utility and not `String.prototype.toUpperCase()` at the call site, which is
+   how the prototype does it (`a.severity.toUpperCase()`). Casing translated copy
+   in JavaScript is a one-way transform on a string the locale owns: it cannot be
+   undone for a script that has no case, it breaks Turkish dotted-i, and it would
+   put the uppercase decision in fifty components instead of one stylesheet. As a
+   CSS transform the caps are presentation, the accessible name stays the
+   sentence-case original, and the `:lang()` guard below switches them off where
+   they do not belong. */
+@utility caps {
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+:where(:lang(ja), :lang(ko), :lang(zh), :lang(hi), :lang(th), :lang(ar), :lang(he)) .caps {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Severity and authorship device. Authored logically so the whole depth model
+   survives a dir flip — writing this physically is the single most expensive
+   direction bug available in this system. */
+@utility stripe-* {
+  border-inline-start: 3px solid --value(--color-*);
+}
+
+/* Tinted fill from a hue, at the theme's tint strength. */
+@utility tint-* {
+  background-color: color-mix(in srgb, --value(--color-*) calc(var(--tint) * 100%), transparent);
+}
+
+/* ── The AI affordance, as the prototype draws it ───────────────────────────
+   Violet into blue at 135°, on the button that opens the assistant. This is the
+   thing DESIGN.md's no-gradient rule was written to prevent, named in that rule
+   by description — and it is here because the client asked for it back, twice,
+   pointing at their own design. Recorded as correction 20 rather than quietly
+   reversed.
+
+   `background-image`, not `background`, so a `bg-violet` underneath survives as
+   the fallback fill: the button is never unstyled if the gradient is unsupported,
+   and the flat violet it degrades to is what this product shipped for months.
+
+   Contained in a utility for the same reason `radar-field` is — a gradient that
+   exists as a class cannot be copied onto the next surface by whoever likes it. */
+@utility ai-gradient {
+  background-image: var(--gradient-ai);
+}
+
+/* ── A documented exception to the no-gradient rule ─────────────────────────
+   DESIGN.md forbids gradients outright, and names violet-on-an-AI-affordance as
+   the clearest generated-software tell there is. The rule now has two exceptions:
+   this one, and `ai-gradient` above. Both are contained in a utility so neither
+   can spread by copy-paste.
+
+   Why it is earned: a radar sweep IS an alpha falloff. The wedge is bright at the
+   leading edge and fades behind it because that is how a sweep decays — remove the
+   falloff and you have a spinning pie slice, which reads as a loading toy rather
+   than as an instrument. It is also single-hue: violet to transparent, no second
+   colour, so none of the two-tone signature the rule exists to prevent.
+
+   Pinned by the brief: this is the prototype's own `radar-sweep`, requested
+   directly. `color-mix` rather than an rgba literal keeps it inside the one-file
+   colour rule, so colour-blind mode and a palette retune reach it like everything
+   else. */
+@utility radar-field {
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--hue-violet) 45%, transparent),
+    transparent 30%
+  );
+}
+
+@utility sr-only-focusable {
+  position: absolute;
+  inset-inline-start: -9999px;
+  &:focus {
+    inset-inline-start: auto;
+  }
+}
+
+/**
+ * A scroller with no visible scrollbar.
+ *
+ * For horizontal rows inside a narrow panel, where the bar is a permanent strip
+ * of vertical space spent on a control the reader does not need — a row of cards
+ * is dragged, flicked or wheeled, not aimed at. Scrolling itself is untouched:
+ * this hides the bar, it does not disable the overflow, and keyboard and trackpad
+ * reach the content exactly as before.
+ *
+ * Deliberately NOT paired with a fade at the trailing edge, which is the usual
+ * companion to this and is a gradient — forbidden outright by DESIGN.md, with two
+ * named exceptions this is not one of. The caller says "there is more" in words
+ * instead.
+ *
+ * Contained here rather than written inline for the same reason the two gradients
+ * are: a scrollbar hidden ad hoc in a dozen components is a dozen places to find
+ * on the day somebody decides it should not be.
+ */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

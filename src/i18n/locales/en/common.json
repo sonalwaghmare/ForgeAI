@@ -1,0 +1,252 @@
+{
+  "brand": {
+    "name": "Forge AI",
+    "assistant": "Ask ForgeAI",
+    "tagline": "Unified OT intelligence for manufacturing"
+  },
+  "actions": {
+    "acknowledge": "Acknowledge",
+    "assign": "Assign",
+    "back": "Back",
+    "cancel": "Cancel",
+    "clearFilters": "Clear filters",
+    "close": "Close",
+    "create": "Create",
+    "delete": "Delete",
+    "dismiss": "Dismiss",
+    "edit": "Edit",
+    "escalate": "Escalate",
+    "export": "Export",
+    "investigate": "Investigate",
+    "openAssistant": "Open the assistant",
+    "print": "Print",
+    "retry": "Try again",
+    "save": "Save changes",
+    "search": "Search",
+    "send": "Send",
+    "sortBy": "Sort: {field}",
+    "viewAll": "View all",
+    "viewAnalysis": "View the reasoning",
+    "viewDetails": "View details",
+    "continue": "Continue"
+  },
+  "severity": {
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "ok": "OK"
+  },
+  "status": {
+    "open": "Open",
+    "ack": "Acknowledged",
+    "escalated": "Escalated",
+    "resolved": "Resolved",
+    "unassigned": "Unassigned",
+    "acknowledged": "Acknowledged",
+    "dismissed": "Dismissed",
+    "snoozed": "Snoozed"
+  },
+  "rca": {
+    "pending": "No analysis",
+    "queued": "Analysis queued",
+    "draft": "Analysis drafted",
+    "approved": "Analysis approved"
+  },
+  "state": {
+    "running": "Running",
+    "watch": "Watch",
+    "tripped": "Tripped",
+    "offline": "Offline",
+    "connected": "Connected",
+    "degraded": "Degraded",
+    "live": "Live"
+  },
+  "shift": {
+    "morning": "Morning shift",
+    "afternoon": "Afternoon shift",
+    "night": "Night shift",
+    "window": "{start}–{end}",
+    "crew": "{count, plural, one {# on crew} other {# on crew}}"
+  },
+  "roles": {
+    "lineOperator": "Line Operator",
+    "plantManager": "Plant Manager",
+    "reliabilityEngineer": "Reliability Engineer",
+    "maintenanceTechnician": "Maintenance Technician",
+    "shiftLead": "Shift Lead",
+    "executive": "CXO",
+    "platformAdmin": "Platform Admin",
+    "readOnly": "Read Only"
+  },
+  "hierarchy": {
+    "enterprise": "Enterprise",
+    "region": "Region",
+    "subRegion": "Sub-region",
+    "country": "Country",
+    "area": "Area",
+    "site": "Site",
+    "building": "Building",
+    "floor": "Floor",
+    "line": "Production line",
+    "asset": "Asset"
+  },
+  "metrics": {
+    "oee": "OEE",
+    "mtbf": "MTBF",
+    "mttr": "MTTR",
+    "anomalies24h": "Anom · 24h",
+    "fusionScore": "Fusion score",
+    "health": "Health",
+    "throughput": "Throughput",
+    "baseline": "Baseline",
+    "threshold": "Threshold",
+    "reading": "Reading"
+  },
+  "detectors": {
+    "deltaZ": "Δz-score",
+    "cusum": "CUSUM",
+    "pageHinkley": "Page-Hinkley",
+    "isolationForest": "Isolation Forest"
+  },
+  "rules": {
+    "rule2CascadeSignature": "Cascade signature across sibling sensors",
+    "flatlineWithLiveNeighbours": "Flatline while neighbouring tags stayed live",
+    "iowUpperBreach": "Operating window — upper limit breached",
+    "iowLowerBreach": "Operating window — lower limit breached",
+    "spectralOutlier": "Spectral outlier against trailing baseline"
+  },
+  "anomalyTypes": {
+    "sustainedExceedance": "Sustained exceedance",
+    "frozenSignal": "Frozen signal",
+    "thermalDrift": "Thermal drift",
+    "pressureSurge": "Pressure surge",
+    "bearingWear": "Bearing wear",
+    "contamination": "Contamination",
+    "flowRestriction": "Flow restriction",
+    "oscillation": "Oscillation",
+    "drift": "Drift"
+  },
+  "gates": {
+    "loto": "Lockout/tagout",
+    "guardInterlock": "Guard interlock",
+    "hotWorkPermit": "Hot-work permit",
+    "required": "Required",
+    "verified": "Verified",
+    "awaitingSignoff": "Awaiting sign-off"
+  },
+  "ai": {
+    "authored": "Forge AI",
+    "drafted": "AI-drafted",
+    "analysed": "AI analysed",
+    "provenance": "Summary · synthesised from platform data",
+    "disclaimer": "Verify isolation before any intervention. Confirm critical decisions with your team.",
+    "confidence": "Confidence {value}"
+  },
+  "theme": {
+    "toLight": "Switch to the light theme",
+    "toDark": "Switch to the dark theme",
+    "colourBlind": "Colour-blind accessible mode"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "collapse": "Collapse navigation",
+    "expand": "Expand navigation",
+    "skipToContent": "Skip to content",
+    "notifications": "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "network": "Cannot reach the platform. Check the connection and try again.",
+    "timeout": "The request took too long. The data may still be loading on the server.",
+    "unauthorized": "This session has expired. Sign in again to continue.",
+    "forbidden": "This account does not have access to that.",
+    "notFound": "That record no longer exists, or it was never in this scope.",
+    "conflict": "Someone else changed this while you were working. Reload to see the current state.",
+    "validation": "Some values were rejected. Correct the highlighted fields.",
+    "rateLimited": "Too many requests. Wait a moment, then try again.",
+    "server": "The platform reported an internal error. Nothing was changed.",
+    "cancelled": "The request was cancelled.",
+    "unknown": "An unexpected error occurred.",
+    "requestId": "Reference {id}",
+    "boundary": {
+      "title": "This screen stopped responding",
+      "body": "The error was recorded. Reloading usually clears it.",
+      "reload": "Reload the screen"
+    },
+    "locked": "This account is temporarily locked after too many attempts. Try again in a few minutes."
+  },
+  "empty": {
+    "noResults": "Nothing matches these filters",
+    "noResultsBody": "Clear a filter to widen the search, or choose a different date range."
+  },
+  "loading": "Loading",
+  "synthetic": {
+    "short": "Illustrative data",
+    "long": "Every figure shown is illustrative sample data, not a measurement from a real plant."
+  },
+  "footer": {
+    "copyright": "© {year} Forge AI"
+  },
+  "connectorFamilies": {
+    "otHistorian": "OT historian",
+    "cmms": "CMMS / ERP",
+    "mes": "MES",
+    "vision": "Vision system",
+    "documents": "Document store"
+  },
+  "dataKinds": {
+    "signals": "Live signals",
+    "assetTags": "Asset tags",
+    "alarmEvents": "Alarm events",
+    "timeSeries": "Time series",
+    "sensorTags": "Sensor tags",
+    "maintenanceRecords": "Maintenance records",
+    "workOrders": "Work orders",
+    "equipmentMaster": "Equipment master",
+    "partsInventory": "Parts inventory",
+    "notifications": "Notifications",
+    "productionCounts": "Production counts",
+    "downtimeReasons": "Downtime reasons",
+    "productChangeovers": "Product changeovers",
+    "vibration": "Vibration",
+    "engineeringUnits": "Engineering units",
+    "qualityCodes": "Quality codes",
+    "inspectionVerdicts": "Inspection verdicts",
+    "defectClasses": "Defect classifications",
+    "roiMeasurements": "ROI measurements",
+    "frameCaptures": "Frame captures",
+    "thermalFrames": "Thermal frames",
+    "rawVideo": "Raw video",
+    "functionalLocations": "Functional locations",
+    "maintenancePlans": "Maintenance plans",
+    "materialMaster": "Material master",
+    "measurements": "Measurements",
+    "relationalTables": "Relational tables",
+    "objectPrefixes": "Object prefixes",
+    "historicalBackfill": "Historical backfill"
+  },
+  "chart": {
+    "trace": "Vibration RMS · {asset} · trailing 72 hours",
+    "threshold": "Trip threshold {value}",
+    "normalBand": "Normal operating band",
+    "anomalyRegion": "Anomaly region",
+    "hoursAgo": "Hours ago"
+  },
+  "pagination": {
+    "showing": "Showing {first}–{last} of {total} {label}",
+    "rowsPerPage": "Rows",
+    "label": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page",
+    "goToPage": "Go to page {page}"
+  },
+  "shiftShort": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "night": "Night"
+  },
+  "badge": {
+    "beta": "Beta"
+  }
+}

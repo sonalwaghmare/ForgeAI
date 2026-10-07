@@ -1,0 +1,658 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-03T11:55:40Z",
+  "title": "Design System: Forge AI",
+  "extensions": {
+    "colorMeta": {
+      "forge-orange": {
+        "role": "primary",
+        "displayName": "Forge Orange",
+        "canonical": "oklch(0.665 0.185 42)",
+        "tonalRamp": [
+          "oklch(0.20 0.07 42)",
+          "oklch(0.31 0.11 42)",
+          "oklch(0.42 0.15 42)",
+          "oklch(0.53 0.17 42)",
+          "oklch(0.665 0.185 42)",
+          "oklch(0.76 0.14 42)",
+          "oklch(0.86 0.09 42)",
+          "oklch(0.95 0.04 42)"
+        ]
+      },
+      "reasoning-violet": {
+        "role": "secondary",
+        "displayName": "Reasoning Violet",
+        "canonical": "oklch(0.66 0.24 309)",
+        "tonalRamp": [
+          "oklch(0.20 0.09 309)",
+          "oklch(0.30 0.14 309)",
+          "oklch(0.41 0.19 309)",
+          "oklch(0.53 0.22 309)",
+          "oklch(0.66 0.24 309)",
+          "oklch(0.76 0.18 309)",
+          "oklch(0.86 0.11 309)",
+          "oklch(0.95 0.04 309)"
+        ]
+      },
+      "signal-green": {
+        "role": "tertiary",
+        "displayName": "Signal Green",
+        "canonical": "oklch(0.76 0.20 148)",
+        "tonalRamp": [
+          "oklch(0.22 0.07 148)",
+          "oklch(0.33 0.10 148)",
+          "oklch(0.44 0.13 148)",
+          "oklch(0.55 0.16 148)",
+          "oklch(0.66 0.18 148)",
+          "oklch(0.76 0.20 148)",
+          "oklch(0.86 0.12 148)",
+          "oklch(0.95 0.05 148)"
+        ]
+      },
+      "caution-amber": {
+        "role": "tertiary",
+        "displayName": "Caution Amber",
+        "canonical": "oklch(0.78 0.17 62)",
+        "tonalRamp": [
+          "oklch(0.22 0.06 62)",
+          "oklch(0.33 0.09 62)",
+          "oklch(0.44 0.12 62)",
+          "oklch(0.55 0.14 62)",
+          "oklch(0.66 0.16 62)",
+          "oklch(0.78 0.17 62)",
+          "oklch(0.87 0.11 62)",
+          "oklch(0.95 0.05 62)"
+        ]
+      },
+      "trip-red": {
+        "role": "tertiary",
+        "displayName": "Trip Red",
+        "canonical": "oklch(0.65 0.22 27)",
+        "tonalRamp": [
+          "oklch(0.20 0.08 27)",
+          "oklch(0.30 0.12 27)",
+          "oklch(0.40 0.16 27)",
+          "oklch(0.52 0.20 27)",
+          "oklch(0.65 0.22 27)",
+          "oklch(0.75 0.17 27)",
+          "oklch(0.85 0.10 27)",
+          "oklch(0.95 0.04 27)"
+        ]
+      },
+      "watch-yellow": {
+        "role": "tertiary",
+        "displayName": "Watch Yellow",
+        "canonical": "oklch(0.88 0.18 96)",
+        "tonalRamp": [
+          "oklch(0.24 0.06 96)",
+          "oklch(0.35 0.09 96)",
+          "oklch(0.46 0.12 96)",
+          "oklch(0.57 0.14 96)",
+          "oklch(0.68 0.16 96)",
+          "oklch(0.79 0.17 96)",
+          "oklch(0.88 0.18 96)",
+          "oklch(0.96 0.08 96)"
+        ]
+      },
+      "acknowledged-cyan": {
+        "role": "tertiary",
+        "displayName": "Acknowledged Cyan",
+        "canonical": "oklch(0.72 0.13 210)",
+        "tonalRamp": [
+          "oklch(0.22 0.05 210)",
+          "oklch(0.32 0.07 210)",
+          "oklch(0.43 0.09 210)",
+          "oklch(0.53 0.11 210)",
+          "oklch(0.63 0.12 210)",
+          "oklch(0.72 0.13 210)",
+          "oklch(0.84 0.08 210)",
+          "oklch(0.95 0.03 210)"
+        ]
+      },
+      "line-cyan": {
+        "role": "tertiary",
+        "displayName": "Line Cyan",
+        "canonical": "oklch(0.80 0.13 197)",
+        "tonalRamp": [
+          "oklch(0.24 0.05 197)",
+          "oklch(0.34 0.07 197)",
+          "oklch(0.45 0.09 197)",
+          "oklch(0.56 0.11 197)",
+          "oklch(0.68 0.12 197)",
+          "oklch(0.80 0.13 197)",
+          "oklch(0.88 0.08 197)",
+          "oklch(0.96 0.03 197)"
+        ]
+      },
+      "source-orange": {
+        "role": "tertiary",
+        "displayName": "Source Orange",
+        "canonical": "oklch(0.70 0.19 45)",
+        "tonalRamp": [
+          "oklch(0.21 0.07 45)",
+          "oklch(0.32 0.11 45)",
+          "oklch(0.43 0.15 45)",
+          "oklch(0.56 0.18 45)",
+          "oklch(0.70 0.19 45)",
+          "oklch(0.79 0.14 45)",
+          "oklch(0.88 0.08 45)",
+          "oklch(0.96 0.03 45)"
+        ]
+      },
+      "context-violet": {
+        "role": "tertiary",
+        "displayName": "Context Violet",
+        "canonical": "oklch(0.71 0.15 295)",
+        "tonalRamp": [
+          "oklch(0.23 0.06 295)",
+          "oklch(0.33 0.09 295)",
+          "oklch(0.44 0.12 295)",
+          "oklch(0.55 0.14 295)",
+          "oklch(0.64 0.15 295)",
+          "oklch(0.71 0.15 295)",
+          "oklch(0.85 0.08 295)",
+          "oklch(0.96 0.03 295)"
+        ]
+      },
+      "surface-page": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(0.977 0.004 76)",
+        "tonalRamp": [
+          "oklch(0.18 0.004 76)",
+          "oklch(0.30 0.004 76)",
+          "oklch(0.42 0.004 76)",
+          "oklch(0.55 0.004 76)",
+          "oklch(0.68 0.004 76)",
+          "oklch(0.82 0.004 76)",
+          "oklch(0.92 0.004 76)",
+          "oklch(0.977 0.004 76)"
+        ]
+      },
+      "surface-card": {
+        "role": "neutral",
+        "displayName": "Card",
+        "canonical": "oklch(1 0 0)",
+        "tonalRamp": [
+          "oklch(0.18 0 0)",
+          "oklch(0.30 0 0)",
+          "oklch(0.42 0 0)",
+          "oklch(0.55 0 0)",
+          "oklch(0.68 0 0)",
+          "oklch(0.82 0 0)",
+          "oklch(0.93 0 0)",
+          "oklch(1 0 0)"
+        ]
+      },
+      "surface-sunken": {
+        "role": "neutral",
+        "displayName": "Sunken",
+        "canonical": "oklch(0.954 0.007 79)"
+      },
+      "surface-nav": {
+        "role": "neutral",
+        "displayName": "Nav",
+        "canonical": "oklch(0.988 0.002 286)"
+      },
+      "border-hairline": {
+        "role": "neutral",
+        "displayName": "Hairline"
+      },
+      "border-subtle": {
+        "role": "neutral",
+        "displayName": "Subtle"
+      },
+      "row-alt": {
+        "role": "neutral",
+        "displayName": "Row Alt"
+      },
+      "text-primary": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(0.201 0 0)",
+        "tonalRamp": [
+          "oklch(0.14 0 0)",
+          "oklch(0.201 0 0)",
+          "oklch(0.32 0 0)",
+          "oklch(0.45 0 0)",
+          "oklch(0.58 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.86 0 0)",
+          "oklch(0.96 0 0)"
+        ]
+      },
+      "text-dim": {
+        "role": "neutral",
+        "displayName": "Ink Dim"
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted"
+      },
+      "accent-tint": {
+        "role": "primary",
+        "displayName": "Accent Tint"
+      },
+      "violet-tint": {
+        "role": "secondary",
+        "displayName": "Violet Tint"
+      },
+      "dark-surface-page": {
+        "role": "neutral",
+        "displayName": "Void"
+      },
+      "dark-surface-sunken": {
+        "role": "neutral",
+        "displayName": "Void Raised"
+      },
+      "dark-surface-card": {
+        "role": "neutral",
+        "displayName": "Glass"
+      },
+      "dark-surface-raised": {
+        "role": "neutral",
+        "displayName": "Glass Raised"
+      },
+      "dark-border-hairline": {
+        "role": "neutral",
+        "displayName": "Dark Hairline"
+      },
+      "dark-border-subtle": {
+        "role": "neutral",
+        "displayName": "Dark Subtle"
+      },
+      "dark-row-alt": {
+        "role": "neutral",
+        "displayName": "Dark Row Alt"
+      },
+      "dark-text-primary": {
+        "role": "neutral",
+        "displayName": "Dark Ink"
+      },
+      "dark-text-dim": {
+        "role": "neutral",
+        "displayName": "Dark Ink Dim"
+      },
+      "dark-text-muted": {
+        "role": "neutral",
+        "displayName": "Dark Ink Muted"
+      },
+      "cb-trip-red": {
+        "role": "tertiary",
+        "displayName": "Wong Vermillion",
+        "canonical": "oklch(0.55 0.17 41)"
+      },
+      "cb-signal-green": {
+        "role": "tertiary",
+        "displayName": "Wong Bluish Green",
+        "canonical": "oklch(0.60 0.12 172)"
+      },
+      "cb-caution-amber": {
+        "role": "tertiary",
+        "displayName": "Wong Orange",
+        "canonical": "oklch(0.75 0.15 72)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles only. One per screen."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles within a page."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default prose and table cells. Cap AI narrative at 70-80ch."
+      },
+      "bodySmall": {
+        "displayName": "Body Small",
+        "purpose": "Secondary prose, card descriptions, dense cells, the Copilot dock."
+      },
+      "metric": {
+        "displayName": "Metric",
+        "purpose": "The big number on a KPI card. Same size as Display, different role - never a page title."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Buttons, selects, tabs, interactive labels."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Eyebrows, table headers, stat captions, nav group headings. The workhorse of the system."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Machine-minted identifiers only: asset IDs, alert IDs, sensor tags, endpoints, hashes, action codes. Never human prose."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Badge, status pill and chip text. Smallest step that carries meaning; steps up on tablet."
+      },
+      "metricSm": {
+        "displayName": "Metric Small",
+        "purpose": "The figure inside a compact facet tile where the full 28px Metric would crowd its container."
+      }
+    },
+    "shadows": [
+      {
+        "name": "edge",
+        "value": "0 1px 2px rgba(0,0,0,0.04)",
+        "purpose": "Light-theme card at rest. Defines an edge, not a height."
+      },
+      {
+        "name": "ambient",
+        "value": "0 8px 32px rgba(0,0,0,0.4)",
+        "purpose": "Dark-theme card at rest, paired with backdrop blur."
+      },
+      {
+        "name": "lift",
+        "value": "0 8px 24px rgba(0,0,0,0.14)",
+        "purpose": "Hover on an interactive card, with translateY(-2px). Response to input, never a resting state."
+      },
+      {
+        "name": "accent-lift",
+        "value": "0 4px 14px rgba(242,101,34,0.3)",
+        "purpose": "Primary buttons only. The one place the accent is allowed to glow."
+      },
+      {
+        "name": "dock",
+        "value": "-12px 0 40px rgba(0,0,0,0.10)",
+        "purpose": "The assistant panel casting onto content so it reads as overlaid."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "0.3s ease",
+        "purpose": "Default transition for colour, border and background state changes."
+      },
+      {
+        "name": "ease-dock",
+        "value": "0.55s cubic-bezier(0.22,1,0.36,1)",
+        "purpose": "Assistant dock width open/close. Content reflows rather than being overlaid."
+      },
+      {
+        "name": "ease-carousel",
+        "value": "0.6s cubic-bezier(0.4,0,0.2,1)",
+        "purpose": "Carousel and slide transforms."
+      },
+      {
+        "name": "ease-spring",
+        "value": "0.32s cubic-bezier(0.34,1.56,0.64,1)",
+        "purpose": "Overshoot spring. Toggle knobs only."
+      },
+      {
+        "name": "duration-fade",
+        "value": "0.2s",
+        "purpose": "Modal, overlay and toast entrance."
+      },
+      {
+        "name": "duration-drawer",
+        "value": "0.28s",
+        "purpose": "Right-hand drawer slide-in."
+      },
+      {
+        "name": "pulse",
+        "value": "1.4s infinite",
+        "purpose": "Live status dots and critical indicators. Must respect prefers-reduced-motion."
+      },
+      {
+        "name": "radar-sweep",
+        "value": "2.2s linear infinite",
+        "purpose": "Investigation and analysis radars. Degrades to an opacity pulse under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tablet",
+        "value": "1024px"
+      },
+      {
+        "name": "desktop",
+        "value": "1280px"
+      },
+      {
+        "name": "wide",
+        "value": "1700px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single committed action on a view. Rationed to roughly one per screen.",
+      "html": "<button class=\"ds-btn-primary\">Create Workorder</button>",
+      "css": ".ds-btn-primary { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 13px; font-weight: 600; color: #fff; background: #F26522; border: none; border-radius: 6px; padding: 8px 14px; box-shadow: 0 4px 14px rgba(242,101,34,0.3); cursor: pointer; transition: filter 0.3s, transform 0.3s; } .ds-btn-primary:hover { filter: brightness(1.08); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid #F26522; outline-offset: 2px; } .ds-btn-primary[disabled] { opacity: 0.5; cursor: not-allowed; box-shadow: none; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "The default button. Quiet at rest - a white surface with a hairline - and announces itself only on hover.",
+      "html": "<button class=\"ds-btn\">Acknowledge</button>",
+      "css": ".ds-btn { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 13px; font-weight: 600; color: #1A1A1A; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.09); border-radius: 6px; padding: 8px 14px; cursor: pointer; transition: border-color 0.3s, filter 0.3s; } .ds-btn:hover { border-color: #F26522; } .ds-btn:focus-visible { outline: 2px solid #F26522; outline-offset: 2px; } .ds-btn[disabled] { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "The most reused interactive element in the product - filters, facets, tags, timeframes and suggested prompts. Selected state takes the accent tint.",
+      "html": "<span class=\"ds-chip\">All</span><span class=\"ds-chip ds-chip-on\">Critical</span><span class=\"ds-chip ds-chip-removable\">Line: Bodymaker 3 <span class=\"ds-chip-x\">&#10005;</span></span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 12px; color: rgba(26,26,26,0.60); background: #FFFFFF; border: 1px solid rgba(0,0,0,0.09); border-radius: 6px; padding: 5px 11px; margin-inline-end: 6px; cursor: pointer; white-space: nowrap; transition: border-color 0.3s, color 0.3s, background 0.3s; } .ds-chip:hover { border-color: #F26522; color: #1A1A1A; } .ds-chip:focus-visible { outline: 2px solid #F26522; outline-offset: 2px; } .ds-chip-on { background: rgba(242,101,34,0.14); color: #F26522; border-color: rgba(242,101,34,0.4); } .ds-chip-x { font-size: 10px; opacity: 0.7; } .ds-chip-x:hover { opacity: 1; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "The filter-bar search pattern: a bordered container with a leading stroke icon and a borderless transparent input.",
+      "html": "<div class=\"ds-search\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3-3\"/></svg><input type=\"search\" placeholder=\"Search ID or name&hellip;\" aria-label=\"Search assets\"/></div>",
+      "css": ".ds-search { display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.09); border-radius: 6px; padding: 8px 13px; width: 240px; transition: border-color 0.3s; } .ds-search:focus-within { border-color: #F26522; outline: 2px solid rgba(242,101,34,0.35); outline-offset: 1px; } .ds-search svg { width: 14px; height: 14px; flex-shrink: 0; fill: none; stroke: rgba(26,26,26,0.40); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; } .ds-search input { flex: 1; min-width: 0; border: none; background: transparent; outline: none; font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 14px; color: #1A1A1A; } .ds-search input::placeholder { color: rgba(26,26,26,0.40); }"
+    },
+    {
+      "name": "Severity Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "The system's atom of meaning. Five tones with a colour-mix tint, and a shape glyph hidden by default that appears in colour-blind mode so severity is never carried by hue alone.",
+      "html": "<span class=\"ds-badge ds-badge-critical\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#9670;</span>CRITICAL</span><span class=\"ds-badge ds-badge-high\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#9650;</span>HIGH</span><span class=\"ds-badge ds-badge-medium\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#9679;</span>MEDIUM</span><span class=\"ds-badge ds-badge-low\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#9632;</span>LOW</span><span class=\"ds-badge ds-badge-ok\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#10003;</span>HEALTHY</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 11px; font-weight: 600; border-radius: 20px; padding: 3px 9px; margin-inline-end: 6px; white-space: nowrap; } .ds-glyph { display: none; font-size: 0.85em; line-height: 1; } .ds-badge-critical { color: #FF453A; background: color-mix(in srgb, #FF453A 16%, transparent); } .ds-badge-high { color: #FF9F0A; background: color-mix(in srgb, #FF9F0A 16%, transparent); } .ds-badge-medium { color: #B58900; background: rgba(255,214,10,0.20); } .ds-badge-low { color: #F26522; background: color-mix(in srgb, #F26522 16%, transparent); } .ds-badge-ok { color: #1E8E3E; background: color-mix(in srgb, #30D158 20%, transparent); }"
+    },
+    {
+      "name": "KPI Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The metric tile. Eyebrow label, a big tabular figure, a caption, and an optional trend. Lifts on hover when it is a navigation target.",
+      "html": "<div class=\"ds-kpi\"><div class=\"ds-kpi-label\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M13 2 4 14h7l-1 8 9-12h-7l1-8Z\"/></svg>Active Anomalies</div><div class=\"ds-kpi-value\">13</div><div class=\"ds-kpi-sub\">3 critical &middot; 4 unassigned</div></div>",
+      "css": ".ds-kpi { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.09); border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 16px 18px; width: 210px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; } .ds-kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.14); border-color: color-mix(in srgb, #F26522 55%, transparent); } .ds-kpi:focus-visible { outline: 2px solid #F26522; outline-offset: 2px; } .ds-kpi-label { display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 12px; color: rgba(26,26,26,0.60); } .ds-kpi-label svg { width: 14px; height: 14px; fill: none; stroke: rgba(26,26,26,0.60); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; } .ds-kpi-value { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 28px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; margin-top: 8px; color: #FF9F0A; font-variant-numeric: tabular-nums; } .ds-kpi-sub { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 11px; color: rgba(26,26,26,0.40); margin-top: 4px; }"
+    },
+    {
+      "name": "Severity Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The left-edge device. Severity and status live on a 3px coloured left border, which survives print, works in colour-blind mode and lets a stack of cards be scanned vertically.",
+      "html": "<div class=\"ds-sev-card\"><div class=\"ds-sev-eyebrow\">Sustained Exceedance</div><div class=\"ds-sev-title\">Vibration RMS on Conveyor Drive Motor #3</div><div class=\"ds-sev-meta\"><span class=\"ds-mono\">ALR-1024</span> &middot; Building 1 &middot; detected 13/03/2026 14:44</div></div>",
+      "css": ".ds-sev-card { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.09); border-inline-start: 3px solid #FF453A; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 14px 16px; max-width: 460px; cursor: pointer; transition: background 0.3s, border-color 0.3s; } .ds-sev-card:hover { background: #F3F1EC; } .ds-sev-eyebrow { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(26,26,26,0.40); } .ds-sev-title { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 15px; font-weight: 600; color: #1A1A1A; margin-top: 6px; } .ds-sev-meta { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 12px; color: rgba(26,26,26,0.40); margin-top: 4px; } .ds-mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; font-weight: 500; color: #F26522; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "AI Surface",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Reasoning Violet marks AI authorship and nothing else: violet left border, Copilot node glyph, a provenance eyebrow, and an italic verification disclaimer.",
+      "html": "<div class=\"ds-ai\"><div class=\"ds-ai-head\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" class=\"ds-ai-glyph\"><polygon points=\"12,2.2 20,7 20,17 12,21.8 4,17 4,7\"/><line x1=\"12\" y1=\"12\" x2=\"12\" y2=\"8\"/><line x1=\"12\" y1=\"12\" x2=\"16.5\" y2=\"10.2\"/><line x1=\"12\" y1=\"12\" x2=\"16.5\" y2=\"14.5\"/><line x1=\"12\" y1=\"12\" x2=\"12\" y2=\"16.6\"/><line x1=\"12\" y1=\"12\" x2=\"7.5\" y2=\"14.5\"/><line x1=\"12\" y1=\"12\" x2=\"7.5\" y2=\"10.2\"/><circle cx=\"12\" cy=\"12\" r=\"2\" class=\"ds-ai-core\"/></svg><span class=\"ds-ai-eyebrow\">Root Cause Analysis</span><span class=\"ds-ai-pill\">AI-DRAFTED</span></div><p class=\"ds-ai-body\">Multi-detector agreement (&Delta;z-score 11.12&sigma; spike + CUSUM drift) localises the fault to the discharge bearing. Regression on the 72-hour trend projects a trip-threshold breach in <b>~4.5 hours</b> at the current slope.</p><div class=\"ds-ai-note\">Always verify critical operational decisions with your team.</div></div>",
+      "css": ".ds-ai { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.09); border-inline-start: 3px solid #BF5AF2; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 16px 18px; max-width: 520px; } .ds-ai-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; } .ds-ai-glyph { width: 15px; height: 15px; fill: none; stroke: #BF5AF2; stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; } .ds-ai-core { fill: #BF5AF2; stroke: none; } .ds-ai-eyebrow { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: rgba(26,26,26,0.40); flex: 1; } .ds-ai-pill { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.4px; color: #BF5AF2; border: 1px solid rgba(191,90,242,0.4); border-radius: 10px; padding: 1px 6px; } .ds-ai-body { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 13.5px; line-height: 1.6; color: rgba(26,26,26,0.60); margin: 0; } .ds-ai-body b { color: #1A1A1A; font-weight: 600; } .ds-ai-note { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 11px; font-style: italic; color: rgba(26,26,26,0.40); margin-top: 14px; }"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Group heading plus items. Active takes the accent tint, Forge Orange ink and a 3px left border with compensating padding so the label never shifts.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-group\">Monitor</div><a class=\"ds-nav-item ds-nav-item-active\" href=\"#\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M13 2 4 14h7l-1 8 9-12h-7l1-8Z\"/></svg>Anomalies</a><a class=\"ds-nav-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 13l5-4\"/><circle cx=\"12\" cy=\"13\" r=\"9\"/><path d=\"M5 18a8 8 0 0 1 14 0\"/></svg>OEE &amp; Operations</a><a class=\"ds-nav-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 21V9l6 4V9l6 4V5l6 4v12H3Z\"/></svg>Lines &amp; Assets</a></nav>",
+      "css": ".ds-nav { background: #FBFBFD; border-inline-end: 1px solid rgba(0,0,0,0.07); width: 212px; padding: 8px 0; } .ds-nav-group { font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: rgba(29,29,31,0.42); padding: 11px 16px 5px; } .ds-nav-item { display: flex; align-items: center; gap: 9px; font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 12px; font-weight: 500; color: rgba(29,29,31,0.65); text-decoration: none; padding: 6px 16px; margin: 1px 7px; border-radius: 8px; border-inline-start: 3px solid transparent; white-space: nowrap; transition: color 0.3s, background 0.3s; } .ds-nav-item svg { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; } .ds-nav-item:hover { background: rgba(0,0,0,0.06); color: #1D1D1F; } .ds-nav-item:focus-visible { outline: 2px solid #F26522; outline-offset: -2px; } .ds-nav-item-active, .ds-nav-item-active:hover { background: rgba(242,101,34,0.13); color: #F26522; border-inline-start: 3px solid #F26522; padding-inline-start: 15px; }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "custom",
+      "refersTo": "table-cell",
+      "description": "The product's most-used surface. Sticky sunken header with an uppercase label, subtle row dividers, sub-2% zebra striping, and a severity left border on rows that carry state.",
+      "html": "<div class=\"ds-table-wrap\"><table class=\"ds-table\"><thead><tr><th>Asset</th><th>Type</th><th>Health</th><th>Status</th></tr></thead><tbody><tr class=\"ds-row-critical\"><td><b>Washer WS-01</b> <span class=\"ds-tmono\">WS-01</span></td><td>Washer</td><td class=\"ds-num\">47</td><td><span class=\"ds-badge ds-badge-critical\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#9670;</span>critical</span></td></tr><tr><td><b>Bodymaker BM-03</b> <span class=\"ds-tmono\">BM-03</span></td><td>Bodymaker</td><td class=\"ds-num\">64</td><td><span class=\"ds-badge ds-badge-high\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#9650;</span>warning</span></td></tr><tr><td><b>Cupper CP-01</b> <span class=\"ds-tmono\">CP-01</span></td><td>Cupper</td><td class=\"ds-num\">91</td><td><span class=\"ds-badge ds-badge-ok\"><span class=\"ds-glyph\" aria-hidden=\"true\">&#10003;</span>healthy</span></td></tr></tbody></table></div>",
+      "css": ".ds-table-wrap { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.09); border-radius: 6px; overflow: hidden; } .ds-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Sans', -apple-system, sans-serif; font-size: 13px; color: #1A1A1A; } .ds-table thead th { position: sticky; top: 0; background: #F3F1EC; text-align: left; padding: 11px 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(26,26,26,0.60); border-bottom: 1px solid rgba(0,0,0,0.09); white-space: nowrap; } .ds-table tbody td { padding: 11px 14px; border-bottom: 1px solid rgba(0,0,0,0.055); } .ds-table tbody tr { cursor: pointer; transition: background 0.3s; } .ds-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.018); } .ds-table tbody tr:hover { background: #F3F1EC; } .ds-table tbody tr:focus-visible { outline: 2px solid #F26522; outline-offset: -2px; } .ds-row-critical td:first-child { box-shadow: inset 3px 0 0 #FF453A; } [dir=\"rtl\"] .ds-row-critical td:first-child { box-shadow: inset -3px 0 0 #FF453A; } .ds-tmono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: rgba(26,26,26,0.40); } .ds-num { font-variant-numeric: tabular-nums; font-weight: 600; } .ds-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; border-radius: 20px; padding: 3px 9px; white-space: nowrap; } .ds-glyph { display: none; font-size: 0.85em; line-height: 1; } .ds-badge-critical { color: #FF453A; background: color-mix(in srgb, #FF453A 16%, transparent); } .ds-badge-high { color: #FF9F0A; background: color-mix(in srgb, #FF9F0A 16%, transparent); } .ds-badge-ok { color: #1E8E3E; background: color-mix(in srgb, #30D158 20%, transparent); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Reasoning Machine",
+    "overview": "Forge AI looks like an apparatus with its casing off. Most industrial software hides its logic and hands you a verdict; this one renders the working as the material - detector scores, baseline statistics, tool calls, causal chains, confidence, the rule that fired. The visual system exists to make that evidence legible at speed, not to decorate it. Every surface is a place where the machine is either showing its state or showing its reasoning, and the design's whole job is to keep those two things distinguishable at a glance.\n\nThat produces a deliberately restrained world. The default surface is a warm off-white, near-monochrome, ruled by hairlines rather than shadows. Text carries the hierarchy through weight and size; colour carries almost nothing except meaning. Numbers are always tabular so a column of readings scans as a shape rather than as words. Density is high - this is software for people who read fifteen values before making a decision - but density is achieved by removing chrome, never by removing breathing room between groups.\n\nTwo colours are load-bearing and both are rationed. Forge Orange is the brand and the interactive accent. Reasoning Violet means one thing only: this was authored by the AI. A violet left border, a violet icon, a violet-tinted chip - each is a claim about provenance, and the moment violet becomes decorative the product's central promise stops being readable. The rest of the palette is machine state: green running, amber watch, red tripped.\n\nThe anti-reference is generated-looking software. Confirmed by the client: this must not read as \"AI slop\". That failure mode has specific tells - violet-to-blue gradients (especially on AI affordances), sparkle icons, everything at a 16px+ corner radius, a uniform drop shadow under every card, emoji standing in for icons, rainbow chart series whose colours mean nothing, centred gradient headlines, \"Welcome back!\" copy, abstract blob illustrations in empty states, and a grid of identically-sized tiles where nothing is more important than anything else. Two further rejections: the undifferentiated trading terminal (density without hierarchy) and the chat-first assistant (a text box where the data should be).\n\nThe underlying test is one question, and it is the most useful rule in this document. Point at any visual property and ask what it tells you. Colour tells you state or authorship. A stripe tells you severity. Monospace tells you a machine wrote the string. Tabular figures tell you the column is comparable. Size tells you importance. If the honest answer for some property is \"nothing, it just looks nice\" - that property is slop, and it comes out.",
+    "keyCharacteristics": [
+      "Near-monochrome by default; saturated colour is state or authorship, never emphasis",
+      "Hairline borders and tonal layering instead of shadow stacks in the primary (light) theme",
+      "Tabular numerals on every figure, without exception",
+      "A 3px coloured left border as the primary severity and authorship device",
+      "Reasoning surfaces - traces, evidence, causal chains - are first-class UI, not disclosure panels",
+      "Redundant encoding for state: colour plus shape glyph plus text label, always"
+    ],
+    "rules": [
+      {
+        "name": "The Violet Reservation",
+        "body": "Reasoning Violet marks AI authorship and nothing else. It is never an accent, never a chart series, never a brand flourish. When you want emphasis, reach for weight, size or Forge Orange.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rationed Hue Rule",
+        "body": "On a screen at rest, saturated colour should occupy well under 10% of the pixels. If a screenshot reads as colourful, state has stopped being visible. Colour is how the machine raises its hand.",
+        "section": "colors"
+      },
+      {
+        "name": "The State-Is-Never-Only-Colour Rule",
+        "body": "Every severity is encoded at least twice - hue plus a shape glyph and a text label. In colour-blind mode the palette swaps to Wong (2011) safe values and the glyphs become visible. Because these are tokens, the swap propagates automatically - so never hardcode a status colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Ground Rule",
+        "body": "The page is #FAF9F7, not #FFFFFF. Cards are white. Reversing this - white page, grey cards - inverts the depth model and every hairline stops reading.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tint-Text Rule",
+        "body": "A semantic hue is the fill value, not automatically the text value. Set on a 14-20% tint of itself, the light hues fail contrast badly - Watch Yellow lands near 1.6:1 and Signal Green near 2.3:1. Text on a tint takes a darker step from that colour's tonal ramp (Watch Yellow -> #B58900, Signal Green -> #1E8E3E); Trip Red, Caution Amber, Forge Orange and Reasoning Violet pass at their token value. Verify 4.5:1 on every tinted badge, chip and pill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Numerals Rule",
+        "body": "Every number the user might compare uses font-variant-numeric: tabular-nums. A column of proportional figures cannot be scanned, and this product is columns of figures. There is no exception.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono-Means-Machine Rule",
+        "body": "IBM Plex Mono marks strings the system minted. Human-written text is never monospace, and a machine identifier is never set in the body face - the distinction is load-bearing when an operator is dictating an ID over a radio.",
+        "section": "typography"
+      },
+      {
+        "name": "The Eyebrow Rule",
+        "body": "Every card and section is introduced by a 10px/700/uppercase label in Ink Muted. It is the system's connective tissue; a card without one reads as unplaced.",
+        "section": "typography"
+      },
+      {
+        "name": "The Shell-Never-Scrolls Rule",
+        "body": "The document never scrolls. Navigation, scope selector and the alert banner stay put; content scrolls inside its own region. An operator mid-triage must never lose the nav.",
+        "section": "layout"
+      },
+      {
+        "name": "The Ladder Rule",
+        "body": "Panel widths, radii and spacing come from the documented ladders. A one-off 37px is a defect, not a decision.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat-Light Rule",
+        "body": "Never add backdrop-filter to a light-theme surface. It was removed on purpose. If a light surface needs separation, use the tonal ladder or a hairline.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Leading-Edge Rule",
+        "body": "Severity and authorship live on a card's leading edge - 3px, in the semantic colour, authored as border-inline-start and never border-left. Reach for it before reaching for a shadow, a tint or an icon. Because the whole depth model rests on this one declaration, writing it physically is the single most expensive direction bug available in this system.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One Silhouette Rule",
+        "body": "6px is the default corner. Deviating means the element is a genuinely different class of object (modal, pill, avatar), not that it wanted to look softer.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Stroke-Icon Rule",
+        "body": "Icons are 1.8px stroke on 24x24, round caps and joins, fill: none. Filled icons are reserved for the Forge mark and the Copilot node graph.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Latin-Convention Rule",
+        "section": "typography",
+        "body": "Uppercase and positive letter-spacing are Latin typographic devices, and the eyebrow style leans on both. They do not travel: uppercase is a no-op in CJK, Devanagari, Thai and Arabic, and letter-spacing actively breaks Arabic cursive joining. Author the eyebrow as a class whose text-transform and letter-spacing are disabled per script rather than baked into every call site."
+      },
+      {
+        "name": "The Script-Coverage Rule",
+        "section": "typography",
+        "body": "IBM Plex ships genuine siblings for Devanagari, Arabic, Hebrew, Thai, JP, KR and SC/TC alongside Latin, Cyrillic and Greek, so a future locale is a subset request rather than a hunt for a second family with a different skeleton. The stack must still stay a stack, never a single hardcoded family, and each script sibling wants its own size-adjust and line-height because Devanagari and CJK sit differently on the baseline than Latin."
+      },
+      {
+        "name": "The ASCII-Identifier Rule",
+        "section": "typography",
+        "body": "Machine identifiers stay ASCII and are never translated: BM-03, ALR-1024, WO-4418. An operator reading an asset tag over a radio in any locale reads the same characters. Never route an identifier through t()."
+      },
+      {
+        "name": "The No-Fixed-Text-Width Rule",
+        "section": "layout",
+        "body": "Never set a width on a container whose content is translatable copy. Pad it and let it size. A width in pixels around a string is a bet that the string never changes language, and this product already advertises five."
+      },
+      {
+        "name": "The Earned-Stripe Rule",
+        "section": "elevation",
+        "body": "A stripe is only ever earned. A card carrying no severity and no AI authorship has no coloured edge - it is a plain hairline card. This is what separates the device from the coloured-left-border callout cliche: if every card has a stripe the stripe means nothing, the page reads as a template, and the one card that actually matters stops being findable. On a healthy screen, almost nothing is striped."
+      },
+      {
+        "name": "The Floor-Legibility Rule",
+        "section": "typography",
+        "body": "The desktop scale is tuned for a control-room monitor at desk distance and is too small for the plant floor. On operator surfaces at tablet width, nothing carrying meaning drops below 13px body / 12px secondary / 11px label, and the 10px eyebrow and nav label step up rather than shrink. The reader may be at arm's length, in gloves, under roof-light glare, wearing safety glasses. Density is a desk luxury; on the floor, legibility outranks it and the layout gives up a column instead of a point of type size."
+      }
+    ],
+    "dos": [
+      "Do reserve Reasoning Violet (#BF5AF2) for AI authorship exclusively, and mark every AI surface with the violet left border, the Copilot glyph and a provenance eyebrow.",
+      "Do set every comparable number in tabular numerals, without exception.",
+      "Do use monospace for machine-minted identifiers and never for human prose.",
+      "Do encode state at least twice - hue plus glyph plus label - and read status colours from tokens so colour-blind mode propagates automatically.",
+      "Do take text-on-tint from a darker step of the colour's ramp and verify 4.5:1; a semantic hue is a fill value, not automatically a text value.",
+      "Do reach for the 3px semantic left border before a shadow, tint or icon when a card or row carries severity or authorship.",
+      "Do keep the page ground warm (#FAF9F7) and cards white; hairlines depend on that relationship.",
+      "Do open every card and section with a 10px/700/uppercase eyebrow in Ink Muted.",
+      "Do ration the primary button to roughly one per view; the default button is secondary.",
+      "Do pick panel widths, radii and spacing from the documented ladders.",
+      "Do end each table with the standard pagination footer, and make it actually paginate.",
+      "Do give every interactive element a real focus-visible ring and keyboard activation - this is a WCAG 2.2 AA target, and the prototype's near-universal <div onClick> is the specific failure being corrected.",
+      "Do honour prefers-reduced-motion for all of it - radars, pulses, carousels, the equaliser and the streaming text, not just the two sweeps the prototype covered.",
+      "Do author every box-model and border declaration logically (border-inline-start, padding-inline, text-align: start) and mirror directional glyphs off [dir=\"rtl\"], so a second locale is an attribute rather than a stylesheet fork.",
+      "Do size text containers with padding and give flex and grid children min-width: 0, budgeting +35% for translation.",
+      "Do format every date, number, percentage and duration through Intl, and every count through ICU plural rules.",
+      "Do route all user-facing copy through the i18n layer, including aria-label, alt, placeholder, toasts, empty states and error messages.",
+      "Do treat an engineering unit as a property of the asset's site, never of the reader's locale; locale formats the numeral only."
+    ],
+    "donts": [
+      "Don't add backdrop-filter to a light-theme surface. It was removed deliberately for contrast and render cost.",
+      "Don't hardcode a status hex. #FF453A written inline breaks colour-blind mode silently.",
+      "Don't use Forge Orange to mean a severity, or a severity colour to mean interaction.",
+      "Don't let the interface become a chat window with the data behind it. The assistant is docked, contextual and dismissible; it explains the data and never competes with it. Sparkle icons and gradient-on-everything are out.",
+      "Don't pursue undifferentiated density. High information volume is correct; a wall of monospace with no hierarchy, no whitespace between groups and colour used decoratively is not. Density is earned by removing chrome, not by removing structure.",
+      "Don't fill icons or drop below 1.8px stroke weight; the Forge mark and Copilot glyph are the only filled marks.",
+      "Don't invent a sixth severity tone. Map new states onto the five-step ladder, or give them their own axis and say so.",
+      "Don't present any figure as measured. Every number currently in the system is placeholder data pending the real APIs.",
+      "Don't write border-left, padding-left or margin-left. The leading edge is the system's primary depth device and physical declarations silently invert it.",
+      "Don't put a pixel width around translatable copy, or white-space: nowrap on a label that could grow.",
+      "Don't truncate a severity, status, or unit. Truncate values that are recoverable elsewhere; never the word that tells someone how bad it is.",
+      "Don't concatenate translated strings or interpolate a plural by hand; a sentence assembled from fragments cannot be translated.",
+      "Don't hardcode a single font family. The stack must remain a stack so script-matched faces can be appended.",
+      "Don't convert an engineering unit because of a locale. A threshold of 12.5 mm/s becoming 0.49 in/s without the canonical value alongside is a safety defect, not a formatting choice."
+    ]
+  }
+}

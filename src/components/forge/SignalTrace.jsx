@@ -1,0 +1,369 @@
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { cn } from '@/lib/cn'
+import { formatMeasure } from '@/lib/units'
+import { Eyebrow } from './primitives'
+
+/**
+ * A sensor trace, drawn rather than charted.
+ *
+ * Recharts is installed and is the right tool for ordinary series, but this
+ * chart's vocabulary is specific and semantic: a translucent green
+ * normal-operating band, a red anomaly region opening at a normalised start
+ * point with a dashed boundary, a dashed threshold rule, a triangular onset
+ * marker at the top edge, and an area fill that fades from 28% to nothing.
+ * None of that is a Recharts primitive, so it is authored here.
+ *
+ * Series colour comes from the semantic state, never from a series index — a
+ * rainbow of hues that mean nothing is slop with axes on it.
+ *
+ * ── `tone` is the state, and red is only the default ──────────────────────
+ * Every alarm-coloured mark in here — the trace, the fill, the anomaly region,
+ * the threshold rule, the onset marker, the crosshair — reads one custom
+ * property, so the whole vocabulary moves together and no call site can colour
+ * half of it. It defaults to red because that is what the two original callers
+ * are about: one sensor, going wrong, on a page that has room for one chart.
+ *
+ * The Sensor Explorer draws forty-five of these at once, most of them fine. A
+ * grid of red traces on healthy instruments would say the plant is on fire and
+ * would leave nothing to mark the six that actually are. So it passes the
+ * channel's own state, and green means green.
+ *
+ * @param {object} props
+ * @param {number[]} props.values
+ * @param {number} props.threshold
+ * @param {[number, number]} [props.normalBand]
+ * @param {number} [props.anomalyFrom]  Index where the anomaly region opens.
+ * @param {string} props.unit
+ * @param {string} props.label          Accessible name. Must be translated.
+ * @param {string} [props.tone]         Semantic hue token suffix — red, amber, green.
+ */
+export function SignalTrace({
+  values,
+  threshold,
+  normalBand,
+  anomalyFrom,
+  unit,
+  label,
+  caption,
+  tone = 'red',
+  draw = false,
+  className,
+}) {
+  const { t } = useTranslation('common')
+  const gradientId = useId()
+  const [cursor, setCursor] = useState(null)
+  const [drawn, setDrawn] = useState(!draw)
+  const figureRef = useRef(null)
+
+  /**
+   * The one authored motion moment on the public page: the trace draws itself
+   * once, climbing toward the threshold. It is the product's claim as movement,
+   * not an entrance effect — so it happens once, on arrival, and never again.
+   *
+   * The line is fully visible by default and the animation only runs when the
+   * element is reached, so a reduced-motion reader or a failed observer sees the
+   * finished chart rather than nothing.
+   */
+  useEffect(() => {
+    if (!draw || drawn) return undefined
+    const node = figureRef.current
+    if (!node || typeof IntersectionObserver === 'undefined') {
+      setDrawn(true)
+      return undefined
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setDrawn(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.35 },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [draw, drawn])
+
+  const W = 760
+  const H = 240
+  const PAD = { top: 18, right: 14, bottom: 26, start: 46 }
+
+  const geometry = useMemo(() => {
+    const max = Math.max(...values, threshold, normalBand?.[1] ?? 0)
+    const min = Math.min(...values, normalBand?.[0] ?? 0)
+    // 8% headroom so the line never touches the frame.
+    const span = (max - min) || 1
+    const top = max + span * 0.08
+    const bottom = Math.max(0, min - span * 0.08)
+    const range = top - bottom || 1
+
+    const plotW = W - PAD.start - PAD.right
+    const plotH = H - PAD.top - PAD.bottom
+
+    const x = (index) => PAD.start + (index / (values.length - 1)) * plotW
+    const y = (value) => PAD.top + (1 - (value - bottom) / range) * plotH
+
+    const line = values.map((value, index) => `${index ? 'L' : 'M'}${x(index)} ${y(value)}`).join(' ')
+    const area = `${line} L${x(values.length - 1)} ${y(bottom)} L${x(0)} ${y(bottom)} Z`
+
+    // Five grid lines, evenly spaced across the domain.
+    const ticks = Array.from({ length: 5 }, (_, i) => bottom + (range * i) / 4)
+
+    return { x, y, line, area, ticks, top, bottom, plotW, plotH }
+  }, [values, threshold, normalBand])
+
+  const { x, y, line, area, ticks } = geometry
+  const last = values[values.length - 1]
+
+  const summary = t('chart.trace', { asset: label })
+
+  return (
+    <figure
+      ref={figureRef}
+      className={cn('m-0', className)}
+      // One property, read by every alarm-coloured mark below. A template
+      // literal in a CLASS would never be generated by Tailwind; in a custom
+      // property it is just a token reference, which is the sanctioned way to
+      // take a hue at runtime. See DEMO-MODE.md §2.4.
+      style={{ '--trace-hue': `var(--hue-${tone})` }}
+    >
+      <div className="relative">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="block h-auto w-full"
+        role="img"
+        aria-label={`${summary} — ${formatMeasure({ value: last, unit })}`}
+        onPointerLeave={() => setCursor(null)}
+        onPointerMove={(event) => {
+          const box = event.currentTarget.getBoundingClientRect()
+          const ratio = (event.clientX - box.left) / box.width
+          const px = ratio * W
+          const index = Math.round(
+            ((px - PAD.start) / (W - PAD.start - PAD.right)) * (values.length - 1),
+          )
+          setCursor(Math.min(values.length - 1, Math.max(0, index)))
+        }}
+      >
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--trace-hue)" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="var(--trace-hue)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* Grid — subtle border tone, never a visible cage. */}
+        {ticks.map((value) => (
+          <g key={value}>
+            <line
+              x1={PAD.start}
+              x2={W - PAD.right}
+              y1={y(value)}
+              y2={y(value)}
+              stroke="var(--border-subtle)"
+              strokeWidth="1"
+            />
+          </g>
+        ))}
+
+        {/* Normal operating band. */}
+        {normalBand ? (
+          <rect
+            x={PAD.start}
+            y={y(normalBand[1])}
+            width={W - PAD.start - PAD.right}
+            height={Math.max(0, y(normalBand[0]) - y(normalBand[1]))}
+            fill="var(--hue-green)"
+            fillOpacity="0.1"
+          />
+        ) : null}
+
+        {/* Anomaly region, opening at the normalised onset. */}
+        {anomalyFrom != null ? (
+          <>
+            <rect
+              x={x(anomalyFrom)}
+              y={PAD.top}
+              width={W - PAD.right - x(anomalyFrom)}
+              height={H - PAD.top - PAD.bottom}
+              fill="var(--trace-hue)"
+              fillOpacity="0.06"
+            />
+            <line
+              x1={x(anomalyFrom)}
+              x2={x(anomalyFrom)}
+              y1={PAD.top}
+              y2={H - PAD.bottom}
+              stroke="var(--trace-hue)"
+              strokeWidth="1"
+              strokeDasharray="3 3"
+              strokeOpacity="0.55"
+            />
+            {/* Triangular onset marker at the top edge. */}
+            <path
+              d={`M${x(anomalyFrom) - 4} ${PAD.top - 6} L${x(anomalyFrom) + 4} ${PAD.top - 6} L${x(anomalyFrom)} ${PAD.top} Z`}
+              fill="var(--trace-hue)"
+            />
+          </>
+        ) : null}
+
+        {/* Threshold — dashed, always. A solid rule reads as data. */}
+        <line
+          x1={PAD.start}
+          x2={W - PAD.right}
+          y1={y(threshold)}
+          y2={y(threshold)}
+          stroke="var(--trace-hue)"
+          strokeWidth="1.5"
+          strokeDasharray="6 4"
+        />
+        <path
+          d={area}
+          fill={`url(#${gradientId})`}
+          style={draw ? { opacity: drawn ? 1 : 0, transition: 'opacity .9s ease-out .35s' } : undefined}
+        />
+        <path
+          d={line}
+          fill="none"
+          stroke="var(--trace-hue)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          // pathLength normalises the dash to 1 unit, so the reveal works
+          // without measuring the path in JS.
+          pathLength={draw ? 1 : undefined}
+          style={
+            draw
+              ? {
+                  strokeDasharray: 1,
+                  strokeDashoffset: drawn ? 0 : 1,
+                  transition: 'stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)',
+                }
+              : undefined
+          }
+        />
+
+        {/* Hover crosshair. Pointer-only enhancement — the table below carries
+            the same data for keyboard and screen-reader users. */}
+        {cursor != null ? (
+          <g aria-hidden="true">
+            <line
+              x1={x(cursor)}
+              x2={x(cursor)}
+              y1={PAD.top}
+              y2={H - PAD.bottom}
+              stroke="var(--ink-mute)"
+              strokeWidth="1"
+            />
+            <circle
+              cx={x(cursor)}
+              cy={y(values[cursor])}
+              r="4"
+              fill="var(--surface-card)"
+              stroke="var(--trace-hue)"
+              strokeWidth="2"
+            />
+          </g>
+        ) : null}
+      </svg>
+
+      {/* ── Axis labels, as HTML ──────────────────────────────────────────
+          NOT `<text>` inside the SVG. The viewBox is scaled to the card, so a
+          `fontSize="10"` in user units renders at 10 × (cardWidth / 760) — which
+          is 9.5px on the home page and 5.5px in the Sensor Explorer's grid,
+          where this component is drawn forty-five times at 26rem wide. HTML
+          labels are 11px everywhere, the same as every other label on the card.
+          Positioned by percentage off the same geometry the grid lines use. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        {ticks.map((value) => (
+          <span
+            key={value}
+            className="num absolute -translate-y-1/2 text-end text-micro font-normal text-ink-dim"
+            style={{
+              top: `${(y(value) / H) * 100}%`,
+              insetInlineStart: 0,
+              width: `${((PAD.start - 8) / W) * 100}%`,
+            }}
+          >
+            {value.toFixed(2)}
+          </span>
+        ))}
+
+        {/* The hover readout, at the cursor. Also HTML — it was the last
+            `<text>` in here and shrank with the card like the rest. Flips to the
+            other side of the point past 70% so it never runs off the end. */}
+        {cursor != null ? (
+          <span
+            className="num absolute text-micro font-semibold whitespace-nowrap text-ink"
+            style={{
+              top: `${((y(values[cursor]) - 10) / H) * 100}%`,
+              insetInlineStart: `${(x(cursor) / W) * 100}%`,
+              transform:
+                cursor / (values.length - 1) > 0.7
+                  ? 'translate(-100%, -100%) translateX(-6px)'
+                  : 'translateY(-100%) translateX(6px)',
+            }}
+          >
+            {formatMeasure({ value: values[cursor], unit })}
+          </span>
+        ) : null}
+
+        {/* The threshold caption, on the rule it names. */}
+        <span
+          className="num absolute -translate-y-full pe-1 text-end text-micro font-semibold"
+          style={{
+            top: `${(y(threshold) - 4) / H * 100}%`,
+            insetInlineEnd: `${(PAD.right / W) * 100}%`,
+            color: 'var(--trace-hue)',
+          }}
+        >
+          {t('chart.threshold', { value: formatMeasure({ value: threshold, unit }) })}
+        </span>
+      </div>
+      </div>
+
+      <figcaption className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Eyebrow>{caption ?? summary}</Eyebrow>
+        <span className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-micro font-normal text-ink-dim">
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="inline-block h-2 w-3.5 rounded-[1px]"
+              style={{ background: 'color-mix(in srgb, var(--hue-green) 26%, transparent)' }}
+            />
+            {t('chart.normalBand')}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="inline-block h-2 w-3.5 rounded-[1px]"
+              style={{ background: 'color-mix(in srgb, var(--trace-hue) 18%, transparent)' }}
+            />
+            {t('chart.anomalyRegion')}
+          </span>
+        </span>
+      </figcaption>
+
+      {/* The trace as data. Not a fallback — the only version a screen-reader
+          or keyboard user can actually read. */}
+      <table className="sr-only">
+        <caption>{summary}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{t('chart.hoursAgo')}</th>
+            <th scope="col">{unit}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {values.map((value, index) => (
+            <tr key={index}>
+              <th scope="row">{(values.length - 1 - index) * (72 / (values.length - 1))}</th>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </figure>
+  )
+}

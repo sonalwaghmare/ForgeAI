@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<title>Forge AI — Design Preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ═══ TOKENS ═══════════════════════════════════════════════════ */
+:root{
+  /* semantic hues — fill values */
+  --forge:#F26522; --green:#30D158; --amber:#FF9F0A; --red:#FF453A;
+  --violet:#BF5AF2; --watch:#FFD60A; --ack:#06B6D4; --line-cy:#22D3EE;
+  --source:#F97316; --context:#A78BFA;
+
+  /* on-tint text steps — darker ramp positions, ≥4.5:1 on their own tint */
+  --on-forge:#A33F0E; --on-green:#14672C; --on-amber:#8A5300;
+  --on-red:#B3261E;   --on-violet:#6B2894; --on-watch:#6B5000;
+  --on-ack:#0B5F70;
+
+  --tint:.16;
+  --ff:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --r:6px; --r-md:8px; --r-lg:10px; --r-xl:12px; --r-2xl:16px; --pill:20px;
+  --t:.18s ease;
+  --dock:360px; --rail:212px;
+}
+html[data-theme="light"]{
+  --bg:#FAF9F7; --sunken:#F3F1EC; --card:#FFFFFF; --nav:#FBFBFD;
+  --bd:rgba(0,0,0,.09); --bd2:rgba(0,0,0,.055); --row-alt:rgba(0,0,0,.018);
+  --tx:#1A1A1A;
+  --tx-dim:rgba(26,26,26,.68);   /* 6.0:1 on card · 5.4:1 on sunken */
+  --tx-mute:rgba(26,26,26,.45);  /* NON-TEXT ONLY: icon strokes, dividers */
+  --shadow:0 1px 2px rgba(0,0,0,.04);
+  --lift:0 8px 24px rgba(0,0,0,.14);
+}
+html[data-theme="dark"]{
+  --bg:#0A0A0F; --sunken:#16161F; --card:rgba(255,255,255,.06); --nav:rgba(255,255,255,.03);
+  --bd:rgba(255,255,255,.12); --bd2:rgba(255,255,255,.07); --row-alt:rgba(255,255,255,.025);
+  --tx:#F5F5F7; --tx-dim:rgba(245,245,247,.72); --tx-mute:rgba(245,245,247,.45);
+  --shadow:0 8px 32px rgba(0,0,0,.4);
+  --lift:0 10px 30px rgba(0,0,0,.5);
+  /* on dark the hue itself clears AA against its own tint */
+  --on-forge:#F98B52; --on-green:#5BDE7E; --on-amber:#FFB63F;
+  --on-red:#FF6F66;   --on-violet:#D08CF6; --on-watch:#FFE04F; --on-ack:#3FCEE3;
+  --tint:.20;
+}
+/* Wong (2011) safe palette + redundant shape glyphs */
+html.cb{ --red:#D55E00; --green:#009E73; --amber:#E69F00;
+         --on-red:#8F3E00; --on-green:#00614A; --on-amber:#7A5300; }
+html.cb .glyph{ display:inline-block; }
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:var(--bg); color:var(--tx);
+  font:400 14px/1.5 var(--ff); overflow:hidden;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--forge);outline-offset:2px;border-radius:5px}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--tx-dim)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* ═══ SHELL ════════════════════════════════════════════════════ */
+.app{display:flex;flex-direction:column;height:100vh}
+.top{
+  display:flex;align-items:center;min-height:48px;flex-shrink:0;
+  border-block-end:1px solid var(--bd);background:var(--card);
+  padding-inline-end:14px;z-index:20;
+}
+html[data-theme="dark"] .top{backdrop-filter:blur(20px) saturate(180%)}
+.brand{display:flex;align-items:center;gap:9px;width:var(--rail);flex-shrink:0;
+  padding-inline-start:16px;font-size:16px;font-weight:700;letter-spacing:-.2px;transition:width var(--t)}
+.brand b{color:var(--forge)}
+.app.rail-in .brand{width:60px;padding-inline-start:0;justify-content:center}
+.app.rail-in .brand span{display:none}
+
+.scope{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-md);
+  min-width:236px;text-align:start;transition:background var(--t)}
+.scope:hover{background:var(--sunken)}
+.scope-name{flex:1;font-size:13px;font-weight:600}
+
+.kpis{display:flex;align-items:center;margin-inline-start:6px}
+.kpi-inline{padding:3px 13px;border-inline-start:1px solid var(--bd2)}
+.kpi-inline:first-child{border-inline-start:none}
+.kpi-inline dt{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--tx-dim)}
+.kpi-inline dd{margin:2px 0 0;font-size:13px;font-weight:700;line-height:1}
+.spacer{flex:1}
+
+.shift{display:flex;align-items:center;gap:8px;padding-inline-end:10px;
+  border-inline-end:1px solid var(--bd2);margin-inline-end:8px}
+.shift-t{font-size:11px;font-weight:600;white-space:nowrap}
+.shift-s{font-size:10px;color:var(--tx-dim);white-space:nowrap}
+
+.icon-btn{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border:1px solid var(--bd);border-radius:var(--r-lg);background:var(--card);
+  color:var(--tx-dim);transition:border-color var(--t),color var(--t)}
+.icon-btn:hover{border-color:var(--forge);color:var(--tx)}
+.icon-btn[aria-pressed="true"]{background:var(--forge);border-color:transparent;color:#fff}
+
+.ask{display:inline-flex;align-items:center;gap:7px;height:34px;padding-inline:13px;
+  border-radius:var(--r-lg);background:var(--violet);color:#fff;
+  font-size:12.5px;font-weight:600;transition:filter var(--t)}
+.ask:hover{filter:brightness(1.07)}
+
+.body{display:flex;flex:1;min-height:0}
+
+/* rail */
+.rail{width:var(--rail);flex-shrink:0;display:flex;flex-direction:column;contain:layout paint;
+  background:var(--nav);border-inline-end:1px solid var(--bd);
+  overflow:auto;padding-block:8px;transition:width var(--t)}
+.app.rail-in .rail{width:60px}
+.rail-grp{font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;
+  color:var(--tx-dim);padding:11px 16px 5px}
+.app.rail-in .rail-grp{height:1px;padding:0;margin:8px 12px;background:var(--bd2);overflow:hidden}
+.nav{display:flex;align-items:center;gap:9px;width:calc(100% - 14px);margin:1px 7px;
+  padding:7px 16px;border-radius:var(--r-md);border-inline-start:3px solid transparent;
+  font-size:12px;font-weight:500;color:var(--tx-dim);text-align:start;white-space:nowrap;
+  transition:background var(--t),color var(--t)}
+.nav:hover{background:var(--sunken);color:var(--tx)}
+.nav[aria-current="page"]{background:color-mix(in srgb,var(--forge) 13%,transparent);
+  color:var(--on-forge);border-inline-start-color:var(--forge);padding-inline-start:13px;font-weight:600}
+.app.rail-in .nav span{display:none}
+.app.rail-in .nav{justify-content:center;padding-inline:0;border-inline-start-width:0}
+.rail-user{margin-top:auto;border-block-start:1px solid var(--bd);padding:8px}
+.rail-user button{display:flex;align-items:center;gap:9px;width:100%;padding:6px;
+  border-radius:var(--r-md);text-align:start;transition:background var(--t)}
+.rail-user button:hover{background:var(--sunken)}
+.av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;background:var(--sunken);border:1px solid var(--bd);
+  font-size:10px;font-weight:700;color:var(--tx-dim)}
+.app.rail-in .rail-user .who{display:none}
+.who-n{font-size:12px;font-weight:600;white-space:nowrap}
+.who-r{font-size:10px;color:var(--tx-dim);white-space:nowrap}
+
+/* work area */
+.work{flex:1;min-width:0;display:flex;flex-direction:column}
+.stream{flex:1;min-height:0;overflow:auto}
+.page{padding:22px 32px 40px;max-width:1700px}
+
+/* banner — earned stripe, severity-tinted */
+.banner{display:flex;align-items:center;gap:12px;flex-shrink:0;padding:7px 18px;
+  border-inline-start:3px solid var(--red);
+  background:color-mix(in srgb,var(--red) 9%,var(--bg))}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.banner-t{font-size:12.5px;font-weight:600}
+.banner-s{font-size:10.5px;color:var(--tx-dim)}
+
+/* ═══ HEAD ════════════════════════════════════════════════════ */
+.head{display:flex;align-items:flex-end;gap:14px;margin-block-end:18px}
+h1{font-size:28px;font-weight:600;letter-spacing:-.5px;margin:0;display:flex;align-items:center;gap:10px}
+.live{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+  color:var(--on-green);background:color-mix(in srgb,var(--green) 18%,transparent);
+  border-radius:var(--pill);padding:2px 9px}
+.sub{font-size:13px;color:var(--tx-dim);margin-top:5px}
+
+/* ═══ FACET TILES — controls, not ornaments ═══════════════════ */
+.facets{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:10px;margin-block-end:20px}
+.facet{display:block;text-align:start;padding:12px 14px;background:var(--card);
+  border:1px solid var(--bd);border-inline-start:3px solid transparent;
+  border-radius:var(--r);box-shadow:var(--shadow);
+  transition:transform var(--t),box-shadow var(--t),border-color var(--t)}
+.facet:hover{transform:translateY(-2px);box-shadow:var(--lift)}
+.facet[aria-pressed="true"]{border-inline-start-color:var(--forge);background:var(--sunken)}
+.facet-h{display:flex;align-items:center;gap:6px}
+.facet-n{font-size:26px;font-weight:600;letter-spacing:-.5px;line-height:1;margin-top:7px}
+.facet-c{font-size:10.5px;color:var(--tx-dim);margin-top:4px}
+
+/* ═══ FILTER BAR ══════════════════════════════════════════════ */
+.bar{display:flex;align-items:center;gap:8px;margin-block-end:14px;flex-wrap:wrap}
+.chip{padding:5px 11px;border:1px solid var(--bd);border-radius:var(--r);background:var(--card);
+  font-size:12px;color:var(--tx-dim);white-space:nowrap;transition:border-color var(--t),color var(--t)}
+.chip:hover{border-color:var(--forge);color:var(--tx)}
+.chip[aria-pressed="true"]{background:color-mix(in srgb,var(--forge) 14%,transparent);
+  color:var(--on-forge);border-color:color-mix(in srgb,var(--forge) 40%,transparent);font-weight:600}
+.seg{display:flex;gap:3px;padding:3px;background:var(--sunken);border-radius:var(--r-md)}
+.seg button{display:flex;align-items:center;justify-content:center;width:30px;height:26px;
+  border-radius:5px;color:var(--tx-dim);transition:background var(--t),color var(--t)}
+.seg button[aria-pressed="true"]{background:var(--forge);color:#fff}
+.count{font-size:12px;color:var(--tx-dim)}
+
+/* ═══ ALERT CARDS ═════════════════════════════════════════════ */
+.list{display:flex;flex-direction:column;gap:10px}
+.alert{display:flex;align-items:center;gap:14px;width:100%;text-align:start;
+  padding:14px 16px;background:var(--card);border:1px solid var(--bd);
+  border-radius:var(--r);box-shadow:var(--shadow);
+  transition:background var(--t),border-color var(--t)}
+.alert:hover{background:var(--sunken)}
+.alert[data-sev="critical"]{border-inline-start:3px solid var(--red)}
+.alert[data-sev="high"]    {border-inline-start:3px solid var(--amber)}
+.alert[data-sev="medium"]  {border-inline-start:3px solid var(--watch)}
+.alert[data-sev="low"]     {border-inline-start:3px solid var(--forge)}
+.alert[aria-current="true"]{border-color:var(--forge)}
+.alert-main{flex:1;min-width:0}
+.tags{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-block-end:7px}
+.alert-t{font-size:16px;font-weight:600}
+.alert-m{font-size:12px;color:var(--tx-dim);margin-top:4px}
+.alert-m a{color:var(--on-forge);text-decoration:none;border-block-end:1px solid transparent}
+.alert-m a:hover{border-block-end-color:currentColor}
+.vrule{width:1px;height:44px;background:var(--bd2);flex-shrink:0}
+.alert-side{min-width:168px;flex-shrink:0}
+.alert-id{font-size:12px;font-weight:600;color:var(--on-forge);margin-block-end:6px}
+.alert-when{font-size:12.5px;font-weight:500;margin-top:3px;display:flex;align-items:center;gap:5px}
+
+/* badges — hue as fill, darker ramp step as text */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+  border-radius:var(--pill);padding:3px 9px;white-space:nowrap}
+.glyph{display:none;font-size:.85em;line-height:1}
+.b-critical{color:var(--on-red);   background:color-mix(in srgb,var(--red) calc(var(--tint)*100%),transparent)}
+.b-high    {color:var(--on-amber); background:color-mix(in srgb,var(--amber) calc(var(--tint)*100%),transparent)}
+.b-medium  {color:var(--on-watch); background:color-mix(in srgb,var(--watch) calc(var(--tint)*130%),transparent)}
+.b-low     {color:var(--on-forge); background:color-mix(in srgb,var(--forge) calc(var(--tint)*100%),transparent)}
+.b-ok      {color:var(--on-green); background:color-mix(in srgb,var(--green) calc(var(--tint)*125%),transparent)}
+.b-ack     {color:var(--on-ack);   background:color-mix(in srgb,var(--ack) calc(var(--tint)*110%),transparent)}
+.b-plain   {color:var(--tx-dim);   background:var(--sunken)}
+
+/* ═══ AI NARRATION — flat violet, never a gradient ════════════ */
+.insight{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.55;
+  margin:24px 0 8px;max-width:76ch}
+.insight svg{flex-shrink:0;margin-top:2px}
+.empty{padding:44px 24px;text-align:center;background:var(--card);border:1px solid var(--bd);
+  border-radius:var(--r);box-shadow:var(--shadow)}
+.empty-t{font-size:14px;font-weight:600;margin-block-start:12px}
+.empty-b{font-size:12.5px;color:var(--tx-dim);margin-block-start:6px}
+
+/* ═══ ASSISTANT DOCK — the one authored motion moment ═════════ */
+.dockwrap{width:0;flex-shrink:0;overflow:hidden;will-change:width;contain:layout paint;
+  transition:width .5s cubic-bezier(.22,1,.36,1)}
+.app.dock-open .dockwrap{width:var(--dock)}
+.dock{width:var(--dock);height:100%;display:flex;flex-direction:column;
+  background:var(--card);border-inline-start:1px solid var(--bd);
+  box-shadow:-12px 0 40px rgba(0,0,0,.10)}
+html[data-theme="dark"] .dock{backdrop-filter:blur(20px) saturate(180%)}
+.app.dock-open .dock{animation:dockIn .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes dockIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.dock-h{display:flex;align-items:center;gap:9px;padding:12px 15px;border-block-end:1px solid var(--bd)}
+.mark{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;background:color-mix(in srgb,var(--violet) 16%,transparent)}
+.dock-t{font-size:13px;font-weight:600}
+.dock-c{font-size:10.5px;color:var(--tx-dim)}
+.dock-b{flex:1;overflow:auto;padding:15px}
+.msg-me{max-width:86%;margin-inline-start:auto;padding:9px 12px;background:var(--sunken);
+  border:1px solid var(--bd);border-radius:12px 12px 2px 12px;font-size:12.5px;line-height:1.45}
+.msg-ai{margin-block-start:14px}
+.ai-who{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+  color:var(--on-violet);margin-block-end:7px}
+.msg-ai p{font-size:12.5px;line-height:1.6;color:var(--tx-dim);margin:0 0 9px}
+.msg-ai b{color:var(--tx);font-weight:600}
+.evidence{border:1px solid var(--bd);border-inline-start:3px solid var(--violet);
+  border-radius:var(--r);padding:11px 13px;background:var(--bg)}
+.ev-row{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;padding:4px 0}
+.ev-row + .ev-row{border-block-start:1px solid var(--bd2)}
+.ev-k{color:var(--tx-dim)}
+.disclaim{font-size:11px;font-style:italic;color:var(--tx-dim);margin-block-start:13px}
+.dock-f{padding:12px 15px;border-block-start:1px solid var(--bd)}
+.prompts{display:flex;gap:6px;overflow-x:auto;padding-block-end:9px}
+.prompts .chip{font-size:10.5px;flex-shrink:0}
+.field{display:flex;align-items:center;gap:7px;padding:7px 7px 7px 12px;
+  background:var(--bg);border:1px solid var(--bd);border-radius:var(--r)}
+.field:focus-within{border-color:var(--forge);outline:2px solid color-mix(in srgb,var(--forge) 35%,transparent);outline-offset:1px}
+.field input{flex:1;min-width:0;border:none;background:none;outline:none;color:var(--tx);
+  font:400 13px var(--ff)}
+.field input::placeholder{color:var(--tx-dim)}
+.send{display:flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:5px;background:var(--forge);color:#fff;flex-shrink:0;transition:filter var(--t)}
+.send:hover{filter:brightness(1.08)}
+
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ico-sm{width:13px;height:13px}
+.ico-nav{width:18px;height:18px}
+
+/* ═══ FLOOR LEGIBILITY — tablet steps type up, not down ═══════ */
+@media (max-width:1180px){
+  .page{padding:20px 22px 36px}
+  .alert-side{min-width:0}
+  .vrule{display:none}
+  .kpis .kpi-inline:nth-child(n+3){display:none}
+}
+@media (max-width:1024px){
+  body{font-size:15px}
+  .eyebrow{font-size:11px}
+  .rail-grp{font-size:10px}
+  .nav{font-size:13px;padding-block:10px}
+  .alert{flex-wrap:wrap}
+  .alert-t{font-size:16px}
+  .alert-m,.facet-c,.count{font-size:12.5px}
+  .badge{font-size:12px;padding:4px 10px}
+  .icon-btn,.seg button{min-width:44px;min-height:44px}
+  .chip{padding:9px 13px;font-size:13px}
+  .dockwrap,.app.dock-open .dockwrap{width:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M12 13l5-4"/><circle cx="12" cy="13" r="9"/><path d="M5 18a8 8 0 0 1 14 0"/></symbol>
+  <symbol id="i-factory" viewBox="0 0 24 24"><path d="M3 21V9l6 4V9l6 4V5l6 4v12H3Z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 5-6"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14 7a4 4 0 0 1-5 5L5 16a2 2 0 0 0 3 3l4-4a4 4 0 0 0 5-5l-2 2-2-1-1-2 2-2Z"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M7 8h10v3a5 5 0 0 1-10 0V8ZM12 16v6"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 13A8 8 0 1 1 11 4a6 6 0 0 0 9 9Z"/></symbol>
+  <symbol id="i-rail" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="10" rx="1.5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m4 12 16-8-6 16-3-6-7-2Z"/></symbol>
+  <!-- Copilot: hexagonal node graph. Filled nodes are intentional — it depicts a graph. -->
+  <symbol id="i-ai" viewBox="0 0 24 24">
+    <polygon points="12,2.4 20,7 20,17 12,21.6 4,17 4,7"/>
+    <path d="M12 12V8M12 12l4.4-2.2M12 12l4.4 2.4M12 12v4.5M12 12l-4.4 2.4M12 12L7.6 9.8" stroke-width="1.1"/>
+    <circle cx="12" cy="12" r="1.9" fill="currentColor" stroke="none"/>
+  </symbol>
+</svg>
+
+<div class="app dock-open" id="app">
+
+  <!-- ══ TOP BAR ══ -->
+  <header class="top">
+    <div class="brand">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px;color:var(--forge)">
+        <polygon points="12,2.4 20,7 20,17 12,21.6 4,17 4,7" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="12" r="2.6" fill="currentColor"/>
+      </svg>
+      <span>Forge <b>AI</b></span>
+    </div>
+    <button class="icon-btn" id="railToggle" style="border:none;background:none;width:32px"
+            aria-label="Collapse navigation"><svg class="ico" aria-hidden="true"><use href="#i-rail"/></svg></button>
+
+    <button class="scope">
+      <svg class="ico ico-sm" aria-hidden="true" style="color:var(--forge)"><use href="#i-globe"/></svg>
+      <span class="scope-name">Chennai Plant</span>
+      <svg class="ico ico-sm" aria-hidden="true" style="color:var(--tx-mute)"><use href="#i-down"/></svg>
+    </button>
+
+    <dl class="kpis">
+      <div class="kpi-inline"><dt>OEE</dt><dd class="num">74.2%</dd></div>
+      <div class="kpi-inline"><dt>MTBF</dt><dd class="num">268h</dd></div>
+      <div class="kpi-inline"><dt>MTTR</dt><dd class="num">4.1h</dd></div>
+      <div class="kpi-inline"><dt>Anom · 24h</dt><dd class="num" style="color:var(--on-amber)">22</dd></div>
+    </dl>
+
+    <div class="spacer"></div>
+
+    <div class="shift">
+      <span class="dot" style="background:var(--green)"></span>
+      <div>
+        <div class="shift-t">Night Shift · 22:00–06:00</div>
+        <div class="shift-s">Priya Patel · Line Manager</div>
+      </div>
+    </div>
+
+    <button class="icon-btn" id="theme" aria-label="Switch to dark theme">
+      <svg class="ico" aria-hidden="true"><use href="#i-moon" id="themeIcon"/></svg></button>
+    <button class="icon-btn" id="cb" aria-pressed="false" role="switch"
+            aria-label="Colour-blind accessible mode">
+      <svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg></button>
+    <button class="icon-btn" aria-label="Notifications, 3 unread" style="position:relative">
+      <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg></button>
+    <button class="ask" id="askBtn">
+      <svg class="ico ico-sm" aria-hidden="true"><use href="#i-ai"/></svg> Ask ForgeAI</button>
+  </header>
+
+  <div class="body">
+
+    <!-- ══ RAIL ══ -->
+    <nav class="rail" aria-label="Main">
+      <div class="rail-grp">Overview</div>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></button>
+      <div class="rail-grp">Monitor</div>
+      <button class="nav" aria-current="page"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-bolt"/></svg><span>Anomalies</span></button>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-gauge"/></svg><span>OEE &amp; Operations</span></button>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-factory"/></svg><span>Lines &amp; Assets</span></button>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-chart"/></svg><span>Sensor Explorer</span></button>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-cal"/></svg><span>Shifts</span></button>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-search"/></svg><span>Logbook</span></button>
+      <div class="rail-grp">Act</div>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-wrench"/></svg><span>Work Orders</span></button>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-plug"/></svg><span>Data Fusion</span></button>
+      <div class="rail-grp">Agents</div>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-ai"/></svg><span>AI Copilot</span></button>
+      <div class="rail-grp">Insights</div>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-map"/></svg><span>Executive Dashboard</span></button>
+      <div class="rail-grp">Admin</div>
+      <button class="nav"><svg class="ico ico-nav" aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></button>
+      <div class="rail-user">
+        <button>
+          <span class="av">AM</span>
+          <span class="who"><span class="who-n">Arjun Mehta</span><br><span class="who-r">Line Operator</span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ══ WORK ══ -->
+    <main class="work">
+      <div class="banner" id="banner">
+        <span class="dot" style="background:var(--red)"></span>
+        <span class="badge b-critical"><span class="glyph" aria-hidden="true">◆</span>CRITICAL</span>
+        <div style="flex:1;min-width:0">
+          <div class="banner-t">New anomaly detected · Discharge bearing degradation — ~4.5h to trip</div>
+          <div class="banner-s"><span class="mono">ALR-0002</span> · Bottle Filler · Line 1 · Vibration + temp cascade · just now</div>
+        </div>
+        <button class="chip" id="investigate">Investigate</button>
+        <button class="icon-btn" id="dismiss" aria-label="Dismiss alert banner"
+                style="width:28px;height:28px;border:none;background:none">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </div>
+
+      <div class="stream">
+        <div class="page">
+
+          <div class="head">
+            <div style="flex:1">
+              <h1>Anomalies <span class="live"><span class="dot" style="background:var(--green);width:6px;height:6px"></span>Live</span></h1>
+              <div class="sub"><span id="total">8</span> anomalies across 3 sites · detected in the last 7 days</div>
+            </div>
+            <button class="chip">Jun 2 – Jun 9, 2026</button>
+            <button class="chip">Export</button>
+          </div>
+
+          <!-- Facets: each tile filters the list below it -->
+          <div class="facets" id="facets" role="group" aria-label="Filter by status">
+            <button class="facet" data-f="all" aria-pressed="true">
+              <div class="facet-h"><svg class="ico ico-sm" aria-hidden="true" style="color:var(--tx-mute)"><use href="#i-list"/></svg><span class="eyebrow">All</span></div>
+              <div class="facet-n num">8</div><div class="facet-c">Across every status</div>
+            </button>
+            <button class="facet" data-f="critical" aria-pressed="false">
+              <div class="facet-h"><svg class="ico ico-sm" aria-hidden="true" style="color:var(--red)"><use href="#i-bolt"/></svg><span class="eyebrow">Critical</span></div>
+              <div class="facet-n num" style="color:var(--on-red)">3</div><div class="facet-c">Act this shift</div>
+            </button>
+            <button class="facet" data-f="open" aria-pressed="false">
+              <div class="facet-h"><svg class="ico ico-sm" aria-hidden="true" style="color:var(--forge)"><use href="#i-bolt"/></svg><span class="eyebrow">Open</span></div>
+              <div class="facet-n num">4</div><div class="facet-c">Awaiting triage</div>
+            </button>
+            <button class="facet" data-f="ack" aria-pressed="false">
+              <div class="facet-h"><svg class="ico ico-sm" aria-hidden="true" style="color:var(--ack)"><use href="#i-gear"/></svg><span class="eyebrow">Acknowledged</span></div>
+              <div class="facet-n num">2</div><div class="facet-c">In progress</div>
+            </button>
+            <button class="facet" data-f="escalated" aria-pressed="false">
+              <div class="facet-h"><svg class="ico ico-sm" aria-hidden="true" style="color:var(--amber)"><use href="#i-up"/></svg><span class="eyebrow">Escalated</span></div>
+              <div class="facet-n num">1</div><div class="facet-c">Past SLA</div>
+            </button>
+            <button class="facet" data-f="unassigned" aria-pressed="false">
+              <div class="facet-h"><svg class="ico ico-sm" aria-hidden="true" style="color:var(--tx-mute)"><use href="#i-users"/></svg><span class="eyebrow">Unassigned</span></div>
+              <div class="facet-n num">2</div><div class="facet-c">No owner yet</div>
+            </button>
+          </div>
+
+          <div class="bar">
+            <div class="seg" role="group" aria-label="View">
+              <button aria-pressed="true" aria-label="List view"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-list"/></svg></button>
+              <button aria-pressed="false" aria-label="Board view"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-board"/></svg></button>
+            </div>
+            <button class="chip" data-s="all" aria-pressed="true">All</button>
+            <button class="chip" data-s="critical" aria-pressed="false">Critical · 3</button>
+            <button class="chip" data-s="high" aria-pressed="false">High · 2</button>
+            <button class="chip" data-s="medium" aria-pressed="false">Medium · 2</button>
+            <button class="chip" data-s="low" aria-pressed="false">Low · 1</button>
+            <div class="spacer"></div>
+            <span class="count"><span id="shown">8</span> of 8</span>
+            <button class="chip">Sort: Severity</button>
+          </div>
+
+          <p class="insight">
+            <svg class="ico ico-sm" aria-hidden="true" style="color:var(--violet)"><use href="#i-ai"/></svg>
+            <span>Three of these share the Line&nbsp;1 cooling loop. If you fix the coolant supply first, two of them likely clear on their own.</span>
+          </p>
+
+          <div class="list" id="list"></div>
+
+          <div class="empty" id="empty" hidden>
+            <svg class="ico" aria-hidden="true" style="width:26px;height:26px;color:var(--tx-mute)"><use href="#i-bolt"/></svg>
+            <div class="empty-t">No anomalies match these filters</div>
+            <div class="empty-b">Clear a filter to widen the search, or check a different date range.</div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- ══ ASSISTANT DOCK ══ -->
+    <div class="dockwrap">
+      <aside class="dock" aria-label="Forge AI assistant">
+        <div class="dock-h">
+          <span class="mark"><svg class="ico ico-sm" aria-hidden="true" style="color:var(--violet)"><use href="#i-ai"/></svg></span>
+          <div style="flex:1">
+            <div class="dock-t">Forge AI</div>
+            <div class="dock-c">Context: <span id="ctx">Anomalies</span></div>
+          </div>
+          <button class="icon-btn" id="dockClose" aria-label="Close assistant"
+                  style="width:28px;height:28px;border:none"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+        </div>
+
+        <div class="dock-b">
+          <div class="msg-me">Investigate ALR-1024 and run RCA</div>
+          <div class="msg-ai">
+            <div class="ai-who"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-ai"/></svg>Forge AI</div>
+            <p>Vibration RMS on the drive-end bearing has climbed for 72 hours — <b>0.33 mm/s per hour</b>, about 13.7× the historical baseline. Bearing-housing temperature rose with it (<b>r = 0.87</b>), which rules out a sensor fault.</p>
+            <p>Root cause: progressive discharge-bearing wear. At the current slope the trip threshold is <b>~4.5 hours</b> away.</p>
+            <div class="evidence">
+              <div class="eyebrow" style="margin-block-end:8px">Evidence</div>
+              <div class="ev-row"><span class="ev-k">Regression</span><span class="mono">r² 1.000 · η 4.5h</span></div>
+              <div class="ev-row"><span class="ev-k">Detectors</span><span class="mono">Δz 11.12σ · CUSUM 2.31</span></div>
+              <div class="ev-row"><span class="ev-k">Prior events</span><span class="mono">10 in 7d</span></div>
+              <div class="ev-row"><span class="ev-k">Logbook</span><span class="mono">02:14 · Cell 3</span></div>
+            </div>
+            <p class="disclaim">Verify isolation before any intervention. Always confirm critical decisions with your team.</p>
+          </div>
+        </div>
+
+        <div class="dock-f">
+          <div class="prompts">
+            <button class="chip">Create a work order</button>
+            <button class="chip">Similar past faults</button>
+            <button class="chip">Which sensors are drifting?</button>
+          </div>
+          <div class="field">
+            <label class="sr" for="ask">Ask Forge AI</label>
+            <input id="ask" placeholder="Ask about this anomaly…" />
+            <button class="send" aria-label="Send"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-send"/></svg></button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const ALERTS = [
+  {id:"ALR-1024", sev:"critical", st:"open",       asg:1, sensor:"Vibration RMS",      anom:"Sustained Exceedance", asset:"Conveyor Drive Motor #3", line:"Line 1 — Compressor", when:"13/03/2026 14:44", val:"15.2 mm/s", thr:"12.5"},
+  {id:"ANM-0002", sev:"critical", st:"open",       asg:1, sensor:"Coolant Flow",        anom:"Frozen Signal",        asset:"Compressor C-12",         line:"Line 1 — Compressor", when:"Today 14:30",      val:"0.0 L/min", thr:"5.0"},
+  {id:"ALR-1011", sev:"critical", st:"escalated",  asg:1, sensor:"Oil Particulate",     anom:"Contamination",        asset:"Conveyor Drive Motor #3", line:"Line 4 — Conveyor",   when:"08/06/2026 11:05", val:"420 ppm",   thr:"300"},
+  {id:"ALR-1019", sev:"high",     st:"ack",        asg:1, sensor:"Discharge Temp",      anom:"Thermal Drift",        asset:"Compressor Unit #1",      line:"Line 1 — Compressor", when:"07/06/2026 08:12", val:"118 °C",    thr:"110"},
+  {id:"ANM-0004", sev:"high",     st:"open",       asg:0, sensor:"Discharge Pressure",  anom:"Pressure Surge",       asset:"Heat Exchanger HX-204",   line:"Line 2 — Heat Exch.", when:"Today 13:50",      val:"5.6 bar",   thr:"5.0"},
+  {id:"ALR-1015", sev:"medium",   st:"open",       asg:0, sensor:"Motor Current",       anom:"Phase Imbalance",      asset:"Conveyor Belt #2",        line:"Line 4 — Conveyor",   when:"09/06/2026 04:30", val:"88 A",      thr:"85"},
+  {id:"ANM-0005", sev:"medium",   st:"ack",        asg:1, sensor:"Motor Current",       anom:"Current Imbalance",    asset:"Conveyor CVR-07",         line:"Line 4 — Conveyor",   when:"Today 12:18",      val:"88 A",      thr:"85"},
+  {id:"ALR-1007", sev:"low",      st:"open",       asg:1, sensor:"Acoustic Emission",   anom:"Oscillation",          asset:"Exhaust Fan #3",          line:"Line 7 — Auxiliary",  when:"06/06/2026 16:20", val:"96 dB",     thr:"90"},
+];
+const GLYPH = {critical:"◆", high:"▲", medium:"●", low:"■"};
+const STLBL = {open:["Open","b-plain"], ack:["Acknowledged","b-ack"], escalated:["Escalated","b-high"]};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let facet = "all", sev = "all", selected = null;
+
+function visible(){
+  return ALERTS.filter(a =>
+    (sev === "all" || a.sev === sev) &&
+    (facet === "all" ||
+     (facet === "critical" ? a.sev === "critical" :
+      facet === "unassigned" ? a.asg === 0 : a.st === facet)));
+}
+
+function render(){
+  const rows = visible();
+  const list = document.getElementById("list");
+  list.innerHTML = rows.map(a => {
+    const [stTxt, stCls] = STLBL[a.st];
+    return `<button class="alert" data-sev="${a.sev}" data-id="${a.id}"
+              aria-current="${selected === a.id}">
+      <span class="alert-main">
+        <span class="tags">
+          <span class="badge b-${a.sev}"><span class="glyph" aria-hidden="true">${GLYPH[a.sev]}</span>${a.sev.toUpperCase()}</span>
+          <span class="badge ${stCls}">${stTxt}</span>
+          ${a.asg === 0 ? '<span class="badge b-plain">Unassigned</span>' : ""}
+        </span>
+        <span class="alert-t">${esc(a.anom)} on ${esc(a.sensor)}</span>
+        <span class="alert-m">${esc(a.line)} · ${esc(a.asset)} · reading
+          <span class="mono">${esc(a.val)}</span> against threshold
+          <span class="mono">${esc(a.thr)}</span></span>
+      </span>
+      <span class="vrule"></span>
+      <span class="alert-side">
+        <span class="alert-id mono">#${a.id}</span>
+        <span class="eyebrow">Detected</span>
+        <span class="alert-when num">${esc(a.when)}</span>
+      </span>
+    </button>`;
+  }).join("");
+
+  document.getElementById("empty").hidden = rows.length > 0;
+  document.getElementById("shown").textContent = rows.length;
+  document.getElementById("total").textContent = ALERTS.length;
+
+  list.querySelectorAll(".alert").forEach(el => el.addEventListener("click", () => {
+    selected = el.dataset.id;
+    const a = ALERTS.find(x => x.id === selected);
+    document.getElementById("ctx").textContent = a.asset;
+    openDock(); render();
+  }));
+}
+
+const app = document.getElementById("app");
+const openDock = () => app.classList.add("dock-open");
+
+document.getElementById("facets").addEventListener("click", e => {
+  const b = e.target.closest(".facet"); if (!b) return;
+  facet = b.dataset.f;
+  document.querySelectorAll(".facet").forEach(x =>
+    x.setAttribute("aria-pressed", String(x === b)));
+  render();
+});
+
+document.querySelectorAll(".chip[data-s]").forEach(c => c.addEventListener("click", () => {
+  sev = c.dataset.s;
+  document.querySelectorAll(".chip[data-s]").forEach(x =>
+    x.setAttribute("aria-pressed", String(x === c)));
+  render();
+}));
+
+document.getElementById("theme").addEventListener("click", e => {
+  const dark = document.documentElement.dataset.theme === "dark";
+  document.documentElement.dataset.theme = dark ? "light" : "dark";
+  e.currentTarget.querySelector("use").setAttribute("href", dark ? "#i-moon" : "#i-sun");
+  e.currentTarget.setAttribute("aria-label", dark ? "Switch to dark theme" : "Switch to light theme");
+});
+
+document.getElementById("cb").addEventListener("click", e => {
+  const on = document.documentElement.classList.toggle("cb");
+  e.currentTarget.setAttribute("aria-pressed", String(on));
+});
+
+document.getElementById("railToggle").addEventListener("click", e => {
+  const inn = app.classList.toggle("rail-in");
+  e.currentTarget.setAttribute("aria-label", inn ? "Expand navigation" : "Collapse navigation");
+});
+
+document.getElementById("askBtn").addEventListener("click", openDock);
+document.getElementById("dockClose").addEventListener("click", () => app.classList.remove("dock-open"));
+document.getElementById("investigate").addEventListener("click", () => {
+  selected = "ALR-1024";
+  document.getElementById("ctx").textContent = "Conveyor Drive Motor #3";
+  openDock(); render();
+});
+document.getElementById("dismiss").addEventListener("click", () =>
+  document.getElementById("banner").remove());
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Forge AI — know what's failing, why, and how long you have",
+    "description": "Forge AI sits above the systems your plant already runs. It reads every signal, explains what is developing and what caused it, and drives the resulting work into your CMMS. Every finding shows its evidence."
+  },
+  "nav": {
+    "label": "Page sections",
+    "detection": "Detection",
+    "reasoning": "Reasoning",
+    "assistant": "Assistant",
+    "plant": "Your plant",
+    "sources": "Sources",
+    "login": "Sign in",
+    "dashboard": "Open the dashboard"
+  },
+  "hero": {
+    "headline": "Know what's failing, why, and how long you have.",
+    "standfirst": "Forge AI is an OT intelligence layer that sits above the systems your plant already runs — historian, MES, CMMS. It reads every signal, explains what is developing and what caused it, and drives the resulting maintenance back into your systems of record. Every finding arrives with the evidence that produced it.",
+    "primary": "Sign in",
+    "dashboard": "Open the dashboard",
+    "frameLabel": "Live · Findlay Plant · Line 1",
+    "frameRefresh": "Signals refreshed {when}",
+    "verdict": "Discharge bearing, {eta} to the trip threshold",
+    "verdictSub": "Four sibling sensors agree. Work order drafted, awaiting release.",
+    "access": "Your organisation issues your account ID"
+  },
+  "detection": {
+    "heading": "A bearing does not fail suddenly. It tells you for three days.",
+    "body": "Four detectors run against every tag — a z-score against the trailing baseline, CUSUM for accumulated drift, Page-Hinkley for change points, and an isolation forest for shapes none of those catch. One detector firing is noise. This one cleared the qualification gate because four sibling sensors on the same asset agreed inside the window, which is the cascade signature the rule looks for.",
+    "detectorsHeading": "What fired",
+    "gateHeading": "Qualification gate",
+    "gatePassed": "Passed · cascade signature across {count} sibling sensors",
+    "ruleHeading": "Rule that produced the verdict"
+  },
+  "reasoning": {
+    "heading": "Most plant software hands you a verdict. This hands you the working.",
+    "body": "Every finding exposes the baseline statistics it compared against, the tools the agent called and what it passed them, the regression behind the projection, and the named rule that produced the answer. You can disagree with it on the evidence — which is the only kind of disagreement worth having with a model.",
+    "closing": "Nothing on this page is asserted without its trail. Every number here is reachable in the product."
+  },
+  "assistant": {
+    "heading": "Ask it the question you would ask a reliability engineer.",
+    "body": "The assistant is docked next to the data, not in front of it. It answers about the asset you are looking at, cites what it used, and tells you when the answer is no. This exchange is at 02:41 on a night shift, which is when it matters.",
+    "contextLabel": "Context",
+    "threadLabel": "Conversation with Forge AI",
+    "askPlaceholder": "Ask about this asset…",
+    "note": "It refuses as readily as it recommends. An assistant that agrees with every plan is not worth having on a running line.",
+    "sawHeading": "What it could see",
+    "sawBody": "The assistant answers from your plant’s own model, not from a general corpus. For this reply it had:",
+    "saw": {
+      "signals": "72 hours of vibration and housing temperature on {asset}",
+      "siblings": "11 sibling sensors on the same asset",
+      "baseline": "A trailing 30-day baseline for this product run",
+      "logbook": "The operator logbook for the last 14 days",
+      "history": "24 months of comparable events across all three sites",
+      "cmms": "Parts on hand and the planned-stop schedule"
+    }
+  },
+  "work": {
+    "heading": "It drafts the work. You release it.",
+    "body": "Forge AI wrote the work order, reserved the bearing and both seals against on-hand stock, and placed it in the next planned stop. It did not release it, and it did not mark a safety step complete. Anything touching equipment waits for a person and for site procedure.",
+    "aiDrafted": "Drafted by Forge AI · editable before it commits",
+    "gateNote": "Lockout/tagout is required before this bearing is touched. The platform states the requirement and holds the order. It never signs off on your behalf.",
+    "writeBackHeading": "Writes back as",
+    "writeBackBody": "Order creation into your CMMS using its own transaction, not a parallel record. Forge AI never becomes a second version of the truth for equipment master, work orders or materials."
+  },
+  "plant": {
+    "heading": "One model of the plant, from the enterprise down to the bearing.",
+    "body": "Sites, buildings, floors, lines, assets and the sensors beneath them, in the ISA-95 hierarchy your engineers already think in. Scope any screen to any level and every reading, threshold and baseline follows.",
+    "unitsHeading": "Units belong to the site, never to the reader",
+    "unitsBody": "The two bearing faults above sit at different sites. One is measured in inches per second against a 0.49 in/s limit, the other in millimetres per second against 12.5 mm/s. Those describe the same physical limit. Forge AI never converts one into the other, because a threshold that silently changes unit is a safety defect, not a formatting preference.",
+    "columnSite": "Site",
+    "columnProduct": "Product",
+    "columnLines": "Lines",
+    "columnSensors": "Sensors",
+    "columnUnits": "Reads in",
+    "columnState": "State"
+  },
+  "sources": {
+    "heading": "Every connector declares what it does not give you.",
+    "body": "An OT historian supplies signals and explicitly not maintenance records. A CMMS supplies work orders and explicitly not time series. Stating the gap is the point: it is how you know what the platform is inferring versus what it was told.",
+    "provides": "Provides",
+    "doesNotProvide": "Does not provide",
+    "tags": "{count} tags",
+    "synced": "synced {when}"
+  },
+  "close": {
+    "heading": "Open your plant and go looking.",
+    "body": "Sign in with the account ID your organisation was issued, and the plant opens where you left it — every finding reachable, with the reasoning behind it attached. If you would rather be walked through it against your own plant's shape, ask for a session.",
+    "primary": "Sign in",
+    "dashboard": "Open the dashboard"
+  },
+  "footer": {
+    "synthetic": "Meridian Industrial is a fictional enterprise and every figure on this page is illustrative sample data authored for the demo. Nothing here is a measurement from a real plant, a benchmark, or a performance claim.",
+    "apis": "The platform's APIs are in active development. The demo runs against a fixture layer that satisfies the same contract."
+  }
+}
